@@ -1,6 +1,6 @@
 ### Sending test requests
 ```
-    curl -X POST -H "Content-Type: application/json" -d @test_req_body.json http://127.0.0.1:3000/...
+curl -X POST -F "info=@test_req_body.json;type=application/json" -F "avatar=@./src/main.rs" http://127.0.0.1:3000/users
 ```
 
 ### Running db

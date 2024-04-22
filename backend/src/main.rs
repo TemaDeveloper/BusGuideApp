@@ -1,14 +1,18 @@
-use std::env;
+use anyhow::Context;
 use axum::{
+    extract::{multipart::Multipart, DefaultBodyLimit},
     http::StatusCode,
     routing::{get, post},
     Json, Router,
 };
 use backend::schemas;
+use bytes::BytesMut;
 use dotenv::dotenv;
 use sqlx::postgres::PgPoolOptions;
 use static_cell::StaticCell;
+use std::{env, fs};
 use tokio::net::TcpListener;
+use tower_http::limit::RequestBodyLimitLayer;
 
 static DB_CONN: StaticCell<sqlx::PgPool> = StaticCell::new();
 
@@ -45,8 +49,42 @@ async fn root() -> &'static str {
     "Hello, World!"
 }
 
-async fn create_organizator(Json(payload): Json<schemas::Organizator>) -> (StatusCode, String) {
-    dbg!(&payload);
+fn bytes_to_file(path: &str, content: &[u8]) -> anyhow::Result<()> {
+    fs::write(path, content)
+        .with_context(|| format!("Failed to write to file `{}`", path))?;
+    Ok(())
+}
+
+async fn create_organizator(
+    // Json(payload): Json<schemas::Organizator>,
+    mut file: Multipart,
+) -> (StatusCode, String) {
+    let mut info = BytesMut::new();
+    let mut avatar = BytesMut::new();
+
+    while let Some(mut field) = file.next_field().await.unwrap() {
+        if let Some(name) = field.name() {
+            match name {
+                "info" => info.extend_from_slice(&field.chunk().await.unwrap().unwrap()),
+                "avatar" => avatar.extend_from_slice(&field.chunk().await.unwrap().unwrap()),
+                _ => {
+                    return (
+                        StatusCode::EXPECTATION_FAILED,
+                        "Not correct name found in chunk".to_string(),
+                    )
+                }
+            }
+        } else {
+            return (
+                StatusCode::EXPECTATION_FAILED,
+                "No field name is present".to_string(),
+            );
+        }
+    }
+
+    let info: schemas::Organizator = serde_json::from_slice(&info).expect("Unable to parse info");
+    tracing::info!("Got info: {info:?}");
+    bytes_to_file("./main.rs.server", &avatar).unwrap();
 
     (
         StatusCode::CREATED,
