@@ -20,3 +20,8 @@ cargo install sqlx-cli --no-default-features --features native-tls,postgres
 #run
 sqlx migrate run 
 ```
+
+### Print db
+```
+psql -U admin -h localhost -p 10100 -d mydb -W -c "SELECT * FROM organizators;" -P "border=1"
+```

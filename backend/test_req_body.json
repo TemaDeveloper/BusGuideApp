@@ -1,10 +1,8 @@
 {
 	"name": "Eduard",
 	"last_name": "Kechedzhiev",
-	"contact_info": {
-		"regular_number": "N/A",
-		"email": "some@mail.f",
-		"whatsapp_number": "N/A",
-		"tg_tag": "MyTag"
-	}
+	"regular_number": "N/A",
+	"email": "some@mail.f",
+	"whatsapp_number": "N/A",
+	"tg_tag": "MyTag"
 }

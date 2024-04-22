@@ -1,40 +1,34 @@
-use anyhow::Context;
 use axum::{
-    extract::{multipart::Multipart, DefaultBodyLimit},
+    extract::multipart::Multipart,
     http::StatusCode,
     routing::{get, post},
-    Json, Router,
+    Extension, Router,
 };
 use backend::schemas;
 use bytes::BytesMut;
 use dotenv::dotenv;
-use sqlx::postgres::PgPoolOptions;
-use static_cell::StaticCell;
-use std::{env, fs};
+
+use sqlx::{postgres::PgPoolOptions, Row};
+
+use std::env;
 use tokio::net::TcpListener;
-use tower_http::limit::RequestBodyLimitLayer;
 
-static DB_CONN: StaticCell<sqlx::PgPool> = StaticCell::new();
+const AVATAR_SIZE_LIMIT: usize = 100 * 1024 * 1024; /* 100mb */
 
-async fn init_static() {
+#[tokio::main]
+async fn main() {
+    tracing_subscriber::fmt::init();
     dotenv().expect("Could not read .env");
-    let pg_pool = PgPoolOptions::new()
+    let db_conn = PgPoolOptions::new()
         .max_connections(1)
         .connect(&env::var("DATABASE_URL").expect("DATABASE_URL env variable is not found"))
         .await
         .expect("Could not connect to DB, check url");
 
-    DB_CONN.init(pg_pool);
-}
-
-#[tokio::main]
-async fn main() {
-    tracing_subscriber::fmt::init();
-    init_static().await; /* should always be awaited before anything */
-
     let app = Router::new()
         .route("/", get(root))
-        .route("/users", post(create_organizator));
+        .route("/users", post(create_organizator))
+        .layer(Extension(db_conn));
 
     let listener = TcpListener::bind("127.0.0.1:3000")
         .await
@@ -49,14 +43,8 @@ async fn root() -> &'static str {
     "Hello, World!"
 }
 
-fn bytes_to_file(path: &str, content: &[u8]) -> anyhow::Result<()> {
-    fs::write(path, content)
-        .with_context(|| format!("Failed to write to file `{}`", path))?;
-    Ok(())
-}
-
 async fn create_organizator(
-    // Json(payload): Json<schemas::Organizator>,
+    Extension(db_conn): Extension<sqlx::PgPool>,
     mut file: Multipart,
 ) -> (StatusCode, String) {
     let mut info = BytesMut::new();
@@ -66,7 +54,15 @@ async fn create_organizator(
         if let Some(name) = field.name() {
             match name {
                 "info" => info.extend_from_slice(&field.chunk().await.unwrap().unwrap()),
-                "avatar" => avatar.extend_from_slice(&field.chunk().await.unwrap().unwrap()),
+                "avatar" => {
+                    if avatar.len() >= AVATAR_SIZE_LIMIT {
+                        return (
+                            StatusCode::EXPECTATION_FAILED,
+                            "Avatar size exceeded ".to_string(),
+                        );
+                    }
+                    avatar.extend_from_slice(&field.chunk().await.unwrap().unwrap());
+                }
                 _ => {
                     return (
                         StatusCode::EXPECTATION_FAILED,
@@ -82,12 +78,31 @@ async fn create_organizator(
         }
     }
 
-    let info: schemas::Organizator = serde_json::from_slice(&info).expect("Unable to parse info");
-    tracing::info!("Got info: {info:?}");
-    bytes_to_file("./main.rs.server", &avatar).unwrap();
+    let mut info: schemas::Organizator =
+        serde_json::from_slice(&info).expect("Unable to parse info");
+    info.avatar_img = Some(avatar.into());
+    let res = sqlx::query!(
+        r#"
+        INSERT INTO organizators 
+            (avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag)
+        VALUES 
+            ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id
+        "#,
+        info.avatar_img,
+        info.name,
+        info.last_name,
+        info.regular_number,
+        info.email,
+        info.whatsapp_number,
+        info.tg_tag
+    )
+    .fetch_one(&db_conn)
+    .await
+    .unwrap();
 
     (
         StatusCode::CREATED,
-        "Sucsefully created An Organizator".to_string(),
+        format!("User id: {}", res.id),
     )
 }

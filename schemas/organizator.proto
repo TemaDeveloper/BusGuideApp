@@ -6,12 +6,8 @@ message Organizator {
 	optional bytes avatar_img = 1;
 	string name = 2;
 	string last_name = 3;
-	ContactInfo contact_info = 4;
-
-	message ContactInfo {
-		string regular_number = 5;
-		string email = 6;
-		string whatsapp_number = 7;
-		string tg_tag = 8; /* e.g. MyOrg <=> tg.me/MyOrg */
-	}
+	string regular_number = 5;
+	string email = 6;
+	string whatsapp_number = 7;
+	string tg_tag = 8; /* e.g. MyOrg <=> tg.me/MyOrg */
 }
