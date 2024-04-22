@@ -3,11 +3,11 @@ syntax = "proto3";
 // You just have to add numbers for some reason
 // = is not assigning default number
 message Organizator {
-	optional bytes avatar_img = 1;
+	optional string avatar_img = 1;
 	string name = 2;
 	string last_name = 3;
-	string regular_number = 5;
-	string email = 6;
-	string whatsapp_number = 7;
-	string tg_tag = 8; /* e.g. MyOrg <=> tg.me/MyOrg */
+	optional string regular_number = 5;
+	optional string email = 6;
+	optional string whatsapp_number = 7;
+	optional string tg_tag = 8; /* e.g. MyOrg <=> tg.me/MyOrg */
 }

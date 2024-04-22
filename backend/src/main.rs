@@ -1,8 +1,8 @@
 use axum::{
-    extract::multipart::Multipart,
+    extract::{self, multipart::Multipart},
     http::StatusCode,
     routing::{get, post},
-    Extension, Router,
+    Extension, Json, Router,
 };
 use backend::schemas;
 use bytes::BytesMut;
@@ -26,8 +26,8 @@ async fn main() {
         .expect("Could not connect to DB, check url");
 
     let app = Router::new()
-        .route("/", get(root))
-        .route("/users", post(create_organizator))
+        .route("/organizator", post(create_organizator))
+        .route("/organizator/:id", get(get_organizator))
         .layer(Extension(db_conn));
 
     let listener = TcpListener::bind("127.0.0.1:3000")
@@ -39,8 +39,42 @@ async fn main() {
     }
 }
 
-async fn root() -> &'static str {
-    "Hello, World!"
+async fn get_organizator_img(
+    extract::Path(id): extract::Path<i32>,
+    Extension(db_conn): Extension<sqlx::PgPool>,
+) -> (StatusCode, Json<schemas::Organizator>) {
+    todo!()
+}
+
+async fn get_organizator(
+    extract::Path(id): extract::Path<i32>,
+    Extension(db_conn): Extension<sqlx::PgPool>,
+) -> (StatusCode, Json<schemas::Organizator>) {
+    let result = sqlx::query!(
+        "SELECT name, last_name, regular_number, email, whatsapp_number, tg_tag FROM organizators WHERE id = $1",
+        id
+    )
+    .fetch_one(&db_conn)
+    .await;
+
+    match result {
+        Ok(record) => {
+            let organizator = schemas::Organizator {
+                name: record.name,
+                last_name: record.last_name,
+                regular_number: record.regular_number,
+                email: record.email,
+                whatsapp_number: record.whatsapp_number,
+                tg_tag: record.tg_tag,
+                ..Default::default() // Fill in missing fields like avatar_img
+            };
+            (StatusCode::OK, Json(organizator))
+        }
+        Err(_) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(schemas::Organizator::default()),
+        ),
+    }
 }
 
 async fn create_organizator(
@@ -78,9 +112,8 @@ async fn create_organizator(
         }
     }
 
-    let mut info: schemas::Organizator =
-        serde_json::from_slice(&info).expect("Unable to parse info");
-    info.avatar_img = Some(avatar.into());
+    let info: schemas::Organizator = serde_json::from_slice(&info).expect("Unable to parse info");
+
     let res = sqlx::query!(
         r#"
         INSERT INTO organizators 
@@ -89,7 +122,7 @@ async fn create_organizator(
             ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id
         "#,
-        info.avatar_img,
+        &avatar as &[u8], /* just so dumb compiler understands what we want from it */
         info.name,
         info.last_name,
         info.regular_number,
@@ -101,8 +134,5 @@ async fn create_organizator(
     .await
     .unwrap();
 
-    (
-        StatusCode::CREATED,
-        format!("User id: {}", res.id),
-    )
+    (StatusCode::CREATED, format!("User id: {}", res.id))
 }
