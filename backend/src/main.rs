@@ -8,7 +8,7 @@ use backend::schemas;
 use bytes::BytesMut;
 use dotenv::dotenv;
 
-use sqlx::{postgres::PgPoolOptions, Row};
+use sqlx::postgres::PgPoolOptions;
 
 use std::env;
 use tokio::net::TcpListener;
