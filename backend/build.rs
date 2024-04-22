@@ -13,7 +13,7 @@ fn main() -> anyhow::Result<()> {
     config.type_attribute(".", "#[derive(serde::Serialize, serde::Deserialize)]");
     config.compile_protos(
         &["schemas/organizator.proto"],
-        &["."]
+        &[".."]
     )?;
 
     Ok(())
