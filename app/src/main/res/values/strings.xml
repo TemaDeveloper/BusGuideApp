@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">BusTours</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_search">Search</string>
+    <string name="title_trips">Trips</string>
+    <string name="title_profile">Profile</string>
+
+
+    <!--Filters-->
+    <string name="europe">Europe</string>
+    <string name="popular">Popular</string>
+    <string name="newTrips">New</string>
+    <string name="students">For Students</string>
+
+    <!--Main-->
+    <string name="price">Price</string>
+
 </resources>

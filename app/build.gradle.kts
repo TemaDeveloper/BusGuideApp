@@ -43,4 +43,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Add these lines for the new libraries
+    implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.airbnb.android:lottie:6.3.0")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
 }
