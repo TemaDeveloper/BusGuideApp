@@ -1,5 +1,6 @@
-use std::{path::Path, fs};
-use anyhow::anyhow;
+use std::fs;
+use std::path::Path;
+use prost_build::Config;
 
 fn main() -> anyhow::Result<()> {
     // Ensure the schemas directory exists
@@ -8,15 +9,12 @@ fn main() -> anyhow::Result<()> {
         fs::create_dir(schemas_dir)?;
     }
 
-    let err = prost_build::compile_protos(
+    let mut config = Config::new();
+    config.type_attribute(".", "#[derive(serde::Serialize, serde::Deserialize)]");
+    config.compile_protos(
         &["schemas/organizator.proto"],
         &["."]
-    );
-
-    if let Err(err) = err {
-        eprintln!("{}", err.to_string());
-        return Err(anyhow!("Compile Error"));
-    }
+    )?;
 
     Ok(())
 }

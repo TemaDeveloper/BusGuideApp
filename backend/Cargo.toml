@@ -9,4 +9,14 @@ prost-build = "0.12.4"
 anyhow = "1.0.82"
 
 [dependencies]
+tokio = {version = "1.37.0", features = ["full"]}
+sqlx = {version = "0.7.4", features = ["runtime-tokio", "tls-native-tls", "postgres", "json"]}
+serde = {version = "1.0.198", features = ["derive"]}
+serde_json = "1.0.116"
+dotenv = "0.15.0"
+axum = "0.7.5"
+tracing-subscriber = "0.3.18"
+tracing = "0.1.40"
+thiserror = "1.0.59"
+static_cell = "2.0.0"
 prost = "0.12.4"

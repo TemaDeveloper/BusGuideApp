@@ -12,6 +12,6 @@ message Organizator {
 		string regular_number = 5;
 		string email = 6;
 		string whatsapp_number = 7;
-		string tg_tag = 8; /* e.g. @MyOrg */
+		string tg_tag = 8; /* e.g. MyOrg <=> tg.me/MyOrg */
 	}
 }
