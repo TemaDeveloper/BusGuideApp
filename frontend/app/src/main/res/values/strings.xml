@@ -13,5 +13,8 @@
 
     <!--Main-->
     <string name="price">Price</string>
+    <string name="tripPlan">Trip Plan</string>
+    <string name="Buy">Reserve</string>
+    <string name="priceDetails">Price:</string>
 
 </resources>
