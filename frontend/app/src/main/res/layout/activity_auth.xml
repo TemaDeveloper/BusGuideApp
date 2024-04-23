@@ -75,47 +75,6 @@
     </com.google.android.material.card.MaterialCardView>
 
 
-    <TextView
-        android:id="@+id/text_or"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/card"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="@string/login_or"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/text_or"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/img_facebook"
-            android:background="@drawable/circle_background"
-            android:padding="10dp"
-            app:tint="@color/black"
-            android:layout_margin="10dp"
-            android:elevation="4dp"/>
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/img_google"
-            android:background="@drawable/circle_background"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            app:tint="@color/black"
-            android:elevation="4dp"/>
-
-    </LinearLayout>
-
-
 
 
 </RelativeLayout>

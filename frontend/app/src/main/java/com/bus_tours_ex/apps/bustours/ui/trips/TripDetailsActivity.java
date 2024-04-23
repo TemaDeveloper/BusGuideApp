@@ -1,5 +1,6 @@
 package com.bus_tours_ex.apps.bustours.ui.trips;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,7 +43,7 @@ public class TripDetailsActivity extends AppCompatActivity {
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getApplicationContext(), BookingTripActivity.class));
             }
         });
 
