@@ -62,7 +62,7 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
                 holder.filterImage.setImageDrawable(context.getResources().getDrawable(R.drawable.europe_tours_img));
                 break;
             case "For Students":
-                holder.filterImage.setImageDrawable(context.getResources().getDrawable(R.drawable.student_tours_img));
+                holder.filterImage.setImageDrawable(context.getResources().getDrawable(R.drawable.students_tour_img));
                 break;
         }
 
@@ -95,14 +95,14 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
         if (select) {
             if (position == 0) {
                 holder.categoryCard.setStrokeColor(context.getResources().getColor(R.color.blue));
-                holder.filterName.setTextColor(context.getResources().getColor(R.color.purple_200));
+                holder.filterName.setTextColor(context.getResources().getColor(R.color.blue));
                 holder.filterImage.setAlpha(1.f);
                 select = false;
             }
         } else {
             if (rowIndex == position) {
                 holder.categoryCard.setStrokeColor(context.getResources().getColor(R.color.blue));
-                holder.filterName.setTextColor(context.getResources().getColor(R.color.purple_200));
+                holder.filterName.setTextColor(context.getResources().getColor(R.color.blue));
                 holder.filterImage.setAlpha(1.f);
             } else {
                 holder.categoryCard.setStrokeColor(context.getResources().getColor(android.R.color.darker_gray));

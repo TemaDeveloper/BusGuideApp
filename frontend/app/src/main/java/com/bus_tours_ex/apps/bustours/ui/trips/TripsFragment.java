@@ -1,5 +1,7 @@
 package com.bus_tours_ex.apps.bustours.ui.trips;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +20,14 @@ import com.bus_tours_ex.apps.bustours.adapters.MainAdapter;
 import com.bus_tours_ex.apps.bustours.databinding.FragmentTripsBinding;
 import com.bus_tours_ex.apps.bustours.models.FilterItem;
 import com.bus_tours_ex.apps.bustours.models.Trip;
+import com.bus_tours_ex.apps.bustours.ui.trips.UpdateTripCategory;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class TripsFragment extends Fragment implements UpdateTripCategory {
 
-    private TextView categoryName;
+    private TextView categoryName, randomTip;
     private FragmentTripsBinding binding;
     private RecyclerView filtersRecyclerView, mainRecyclerView;
     private ArrayList<FilterItem> filters;
@@ -48,7 +52,7 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
         filters.add(new FilterItem(getResources().getString(R.string.europe),
                 R.drawable.europe_tours_img));
         filters.add(new FilterItem(getResources().getString(R.string.students),
-                R.drawable.student_tours_img));
+                R.drawable.students_tour_img));
 
         mainRecyclerView.setHasFixedSize(true);
         mainRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -62,9 +66,17 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
                 ));
         filtersRecyclerView.setAdapter(filtersAdapter);
 
-
+        randomTip.setText(getRandomTravelTip(getContext()));
 
         return root;
+    }
+
+    // Method to get a random travel tip.
+    public static String getRandomTravelTip(Context context) {
+        Resources res = context.getResources();
+        String[] tips = res.getStringArray(R.array.bus_travel_tips);
+        int randomIndex = new Random().nextInt(tips.length);
+        return tips[randomIndex];
     }
 
     private void buildRecyclerView(){
@@ -106,6 +118,7 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
         filtersRecyclerView = root.findViewById(R.id.filters_recyclerview);
         mainRecyclerView = root.findViewById(R.id.main_recyclerview);
         categoryName = root.findViewById(R.id.category_name);
+        randomTip = root.findViewById(R.id.tipsText);
     }
 
 

@@ -64,7 +64,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:text="All\nCategories"
-                                android:textColor="@color/black"
+                                android:textColor="@color/white"
                                 android:textSize="24sp" />
 
                             <TextView
@@ -72,6 +72,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginTop="10dp"
+                                android:textColor="@color/white"
                                 android:text="Where are you\nheading today?"
                                 android:textSize="14sp" />
 
@@ -95,6 +96,50 @@
 
             </HorizontalScrollView>
 
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginVertical="10dp"
+                        android:src="@drawable/bus_logo"
+                        app:tint="@color/blue" />
+
+                    <ImageView
+                        android:id="@+id/road_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/logo"
+                        android:elevation="10dp"
+                        android:background="@color/blue"/>
+
+                    <TextView
+                        android:id="@+id/tipsText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/road_image"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="Tips"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp" />
+
+
+
+
+                </RelativeLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"

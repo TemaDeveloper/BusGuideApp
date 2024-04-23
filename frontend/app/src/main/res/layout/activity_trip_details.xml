@@ -77,7 +77,7 @@
                         android:textSize="20sp"
                         android:paddingVertical="10dp"
                         android:paddingHorizontal="5dp"
-                        android:textColor="@color/blue"/>
+                        android:textColor="@color/purple_200"/>
 
                 </LinearLayout>
 
@@ -166,6 +166,151 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/TourManager"
+                android:textSize="32sp"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/black"
+                />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="10dp"
+                android:elevation="8dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_gravity="center_horizontal"
+                            android:src="@mipmap/ic_launcher"
+                            android:layout_margin="10dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Name"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:layout_gravity="center_horizontal"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            />
+
+                    </LinearLayout>
+
+                   <LinearLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:gravity="center_vertical"
+                       android:orientation="vertical">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal">
+
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:elevation="10dp"
+                                android:padding="8dp"
+                                android:layout_margin="5dp"
+                                android:src="@drawable/telegram"
+                                app:tint="@color/white" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical"
+                            android:layout_toEndOf="@+id/card_share"
+                            android:text="Telegram"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal">
+
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:elevation="10dp"
+                            android:padding="8dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/whatsapp"
+                            app:tint="@color/white" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical"
+                            android:layout_toEndOf="@+id/card_share"
+                            android:text="Whatsapp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal">
+
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:elevation="10dp"
+                            android:padding="8dp"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/viber"
+                            app:tint="@color/white" />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="center_vertical"
+                            android:layout_toEndOf="@+id/card_share"
+                            android:text="Viber"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                   </LinearLayout>
+
+                </LinearLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/tripPlan"
                 android:textSize="32sp"
                 android:layout_marginTop="16dp"
@@ -199,7 +344,7 @@
                 android:id="@+id/reserve_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 app:strokeWidth="0dp"
                 android:textAllCaps="false"
                 android:layout_marginTop="20dp"

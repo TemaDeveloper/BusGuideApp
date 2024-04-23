@@ -18,6 +18,12 @@
         android:theme="@style/Theme.BusTours"
         tools:targetApi="31">
         <activity
+            android:name=".ui.profile.EditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".auth.AuthActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.trips.TripDetailsActivity"
             android:exported="false" />
         <activity
