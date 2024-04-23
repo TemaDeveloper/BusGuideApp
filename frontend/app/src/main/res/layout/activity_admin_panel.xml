@@ -30,7 +30,7 @@
                 android:id="@+id/log_out_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Log out"
+                android:text="@string/log_out"
                 android:textColor="@color/black"
                 android:background="@drawable/rect_back"
                 android:padding="5dp"
@@ -41,7 +41,7 @@
                 android:id="@+id/create_admin_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Make New Admin"
+                android:text="@string/new_admin_creation"
                 android:textColor="@color/black"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/rect_back"
@@ -53,7 +53,7 @@
                 android:id="@+id/upload_image_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload Tour Image"
+                android:text="@string/upload_tour_image"
                 android:layout_centerInParent="true"
                 android:textSize="20sp"
                 android:textColor="@color/black"
@@ -65,7 +65,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tour Info"
+            android:text="@string/tour_info"
             android:textSize="24sp"
             android:textColor="@color/black"
             android:layout_margin="10dp"/>
@@ -74,14 +74,14 @@
             android:id="@+id/tour_naming_admin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Trip Title"
+            android:hint="@string/tour_trip"
             android:inputType="text"/>
 
         <EditText
             android:id="@+id/tour_price_admin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Trip Price"
+            android:hint="@string/tour_price"
             android:inputType="number"/>
 
         <EditText
@@ -94,7 +94,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Manager Info"
+            android:text="@string/manager_info"
             android:textSize="24sp"
             android:textColor="@color/black"
             android:layout_margin="10dp"/>
@@ -104,6 +104,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
             android:src="@mipmap/ic_launcher"
             android:layout_marginHorizontal="10dp"/>
 
@@ -111,25 +112,25 @@
             android:id="@+id/manager_name_admin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"/>
+            android:hint="@string/name"/>
 
         <EditText
             android:id="@+id/telegram_nickname_manager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Telegram NickName"/>
+            android:hint="@string/manager_telegram"/>
 
         <EditText
             android:id="@+id/watsapp_manager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="WhatsApp"/>
+            android:hint="@string/whatsapp"/>
 
         <EditText
             android:id="@+id/viber_manager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Viber"/>
+            android:hint="@string/viber"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/create_trip_button"
@@ -139,7 +140,7 @@
             android:layout_marginTop="10dp"
             android:backgroundTint="@color/blue"
             android:elevation="8dp"
-            android:text="Done"
+            android:text="@string/done"
             android:textAllCaps="false"
             app:cornerRadius="4dp" />
 

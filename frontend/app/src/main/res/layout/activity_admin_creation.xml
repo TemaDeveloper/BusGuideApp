@@ -13,18 +13,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_arrow_back_ios_new_24"
-        android:layout_margin="10dp"/>
+        android:layout_margin="20dp"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:hint="@string/email"
         android:id="@+id/email_admin"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
+        android:hint="@string/password"
         android:id="@+id/password_admin"/>
 
     <com.google.android.material.button.MaterialButton
@@ -35,7 +35,7 @@
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/blue"
         android:elevation="8dp"
-        android:text="Create"
+        android:text="@string/createButton"
         android:textAllCaps="false"
         app:cornerRadius="4dp" />
 
