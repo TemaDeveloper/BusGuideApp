@@ -1,49 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<com.emilsjolander.components.StickyScrollViewItems.StickyScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fillViewport="true"
     tools:context=".ui.trips.TripsFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_trips"
-            android:textColor="@color/black"
-            android:textSize="32sp"
-            android:layout_margin="8dp"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/filters_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="5dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_trips"
+                android:textColor="@color/black"
+                android:textSize="32sp"
+                android:layout_margin="8dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/europe"
-            android:textSize="24sp"
-            android:textColor="@color/black"
-            android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="8dp"/>
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:fillViewport="true"
+                android:layout_marginHorizontal="5dp"
+                android:scrollbars="none">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/category_card"
+                        android:layout_width="wrap_content"
+                        android:layout_height="200dp"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:elevation="5dp"
+                        app:cardCornerRadius="10dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@color/blue"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="All\nCategories"
+                                android:textColor="@color/white"
+                                android:textSize="24sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginTop="10dp"
+                                android:textColor="@color/white"
+                                android:text="Where are you\nheading today?"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/filters_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/category_card"
+                        android:orientation="horizontal"/>
+
+                </RelativeLayout>
+
+            </HorizontalScrollView>
+
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginVertical="10dp"
+                        android:src="@drawable/bus_logo"
+                        app:tint="@color/blue" />
+
+                    <ImageView
+                        android:id="@+id/road_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/logo"
+                        android:elevation="10dp"
+                        android:background="@color/blue"/>
+
+                    <TextView
+                        android:id="@+id/tipsText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/road_image"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:text="Tips"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp" />
+
+
+
+
+                </RelativeLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp"
+                android:tag="sticky">
+
+                <TextView
+                    android:id="@+id/category_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/europe"
+                    android:textSize="24sp"
+                    android:textColor="@color/black"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginHorizontal="8dp"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/main_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+</com.emilsjolander.components.StickyScrollViewItems.StickyScrollView>

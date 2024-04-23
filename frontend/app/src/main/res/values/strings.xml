@@ -13,5 +13,28 @@
 
     <!--Main-->
     <string name="price">Price</string>
+    <string name="tripPlan">Trip Plan</string>
+    <string name="Buy">Reserve</string>
+    <string name="priceDetails">Price:</string>
+    <string name="TourManager">Tour Manager</string>
+
+    <!--Auth-->
+    <string name="login_or">or login with</string>
+    <string name="login_forget_pass">Forget Password?</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="bus_travel_tips">
+        <item>Reserve tickets ahead for the best deals and assured seating.</item>
+        <item>Carry only what\'s necessary to avoid clutter and for ease of movement.</item>
+        <item>Choose layers and comfy clothing to adjust to temperature changes.</item>
+        <item>Have books, music, or movies ready for on-the-go entertainment.</item>
+        <item>Bring along snacks and drinks to avoid hunger or thirst.</item>
+        <item>Keep your valuables in a secure, personal bag.</item>
+        <item>Make sure your electronics are fully charged before departing.</item>
+        <item>Plan to arrive at the station well before your departure time.</item>
+        <item>Consider a travel pillow and earplugs for overnight or long rides.</item>
+        <item>Stay aware of your itinerary, stops, and transfers.</item>
+    </string-array>
 
 </resources>

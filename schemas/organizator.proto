@@ -10,4 +10,23 @@ message Organizator {
 	optional string email = 6;
 	optional string whatsapp_number = 7;
 	optional string tg_tag = 8; /* e.g. MyOrg <=> tg.me/MyOrg */
+	optional string viber = 9;
+	optional int32 id = 10;
+}
+
+message Trip{
+	string title = 1;
+	string image = 2;
+	int32 price = 3;
+	int32 rating = 4;
+	string plan = 5;
+	int32 organizatorId = 6;
+	string category = 7;
+}
+
+message User{
+	string name = 1;
+	optional string avatar = 2;
+	string email = 3;
+	bool isAdmin = 4;
 }

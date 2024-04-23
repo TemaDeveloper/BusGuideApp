@@ -13,4 +13,19 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="NavigationTabTextAppeareance" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@color/black</item>
+        <item name="tabSelectedTextColor">@color/blue</item>
+        <item name="android:textSize">12sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="NormalTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/black</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorPrimary">@color/black</item>
+    </style>
+
 </resources>
