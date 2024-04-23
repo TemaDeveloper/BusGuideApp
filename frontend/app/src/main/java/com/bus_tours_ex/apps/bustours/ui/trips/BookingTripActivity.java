@@ -2,6 +2,7 @@ package com.bus_tours_ex.apps.bustours.ui.trips;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,17 +20,26 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 public class BookingTripActivity extends AppCompatActivity {
 
     private TextView calendarDates;
+    private ImageView backImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_trip);
 
         calendarDates = findViewById(R.id.calendar_range_text);
+        backImageView = findViewById(R.id.back_image_view);
 
         calendarDates.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDateRangePicker();
+            }
+        });
+
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 

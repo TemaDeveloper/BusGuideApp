@@ -72,12 +72,12 @@
                         android:id="@+id/price_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/priceDetails"
                         android:layout_gravity="center_vertical"
                         android:textSize="20sp"
                         android:paddingVertical="10dp"
                         android:paddingHorizontal="5dp"
-                        android:textColor="@color/purple_200"/>
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
 
                 </LinearLayout>
 
@@ -176,7 +176,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="0dp"
+                app:strokeColor="@color/blue"
+                app:strokeWidth="1dp"
                 android:elevation="8dp"
                 >
 
@@ -190,12 +192,23 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <de.hdodenhof.circleimageview.CircleImageView
+                        <com.google.android.material.card.MaterialCardView
                             android:layout_width="100dp"
                             android:layout_height="100dp"
+                            app:cardCornerRadius="10dp"
+                            android:layout_margin="10dp"
                             android:layout_gravity="center_horizontal"
-                            android:src="@mipmap/ic_launcher"
-                            android:layout_margin="10dp"/>
+                            >
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/ic_launcher_background"/>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+
 
                         <TextView
                             android:layout_width="wrap_content"
