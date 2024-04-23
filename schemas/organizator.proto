@@ -14,19 +14,33 @@ message Organizator {
 	optional int32 id = 10;
 }
 
-message Trip{
+message Trip {
+	int32 organizator_id = 6;
 	string title = 1;
-	string image = 2;
-	int32 price = 3;
-	int32 rating = 4;
-	string plan = 5;
-	int32 organizatorId = 6;
-	string category = 7;
+	repeated string images = 2;
+
+	int32  price			= 3;
+	string plan				= 5;
+	string category			= 7;
+	repeated Review reviews = 8;
+	repeated PickUpPoint pick_up_points = 9;
 }
 
-message User{
+message PickUpPoint {
+	double longitude   = 1;
+	double latitude	   = 2;
+	string description = 3;
+}
+
+message Review {
+	int32 stars;
+	int32 description;
+	int32 user_id
+}
+
+message User {
 	string name = 1;
 	optional string avatar = 2;
 	string email = 3;
-	bool isAdmin = 4;
+	bool is_admin = 4;
 }
