@@ -91,6 +91,13 @@
             android:hint="@string/tripPlan"
             android:inputType="textImeMultiLine|textMultiLine"/>
 
+        <EditText
+            android:id="@+id/tour_pick_up_admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tour_pick_up"
+            android:inputType="textImeMultiLine|textMultiLine" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,38 +106,27 @@
             android:textColor="@color/black"
             android:layout_margin="10dp"/>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/photo_manager"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="10dp"
+
+        <EditText
+            android:id="@+id/manager_email_admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/add_manager_by_email"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="or"
             android:layout_gravity="center_horizontal"
-            android:src="@mipmap/ic_launcher"
-            android:layout_marginHorizontal="10dp"/>
+            android:layout_marginVertical="10dp"/>
 
-        <EditText
-            android:id="@+id/manager_name_admin"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/create_manager_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/name"/>
-
-        <EditText
-            android:id="@+id/telegram_nickname_manager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/manager_telegram"/>
-
-        <EditText
-            android:id="@+id/watsapp_manager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/whatsapp"/>
-
-        <EditText
-            android:id="@+id/viber_manager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/viber"/>
+            android:text="@string/add_manager"
+            android:layout_gravity="center_horizontal"
+            android:textAllCaps="false"
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/create_trip_button"
@@ -141,6 +137,19 @@
             android:backgroundTint="@color/blue"
             android:elevation="8dp"
             android:text="@string/done"
+            android:textAllCaps="false"
+            app:cornerRadius="4dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/all_reservations_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/white"
+            android:elevation="8dp"
+            android:textColor="@color/blue"
+            android:text="@string/see_all_reservations"
             android:textAllCaps="false"
             app:cornerRadius="4dp" />
 

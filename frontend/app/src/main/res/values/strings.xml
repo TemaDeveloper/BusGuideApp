@@ -34,10 +34,18 @@
     <string name="manager_telegram">Telegram NickName</string>
     <string name="whatsapp">WhatsApp</string>
     <string name="viber">Viber</string>
+    <string name="add_manager">Create Manager</string>
+    <string name="add_manager_by_email">Add Manager by Email</string>
+    <string name="tour_pick_up">Pick Up</string>
+    <string name="see_all_reservations">See All Reservations</string>
+    <string name="all_reservations">All Reservations</string>
 
     <!--Users-->
     <string name="log_out">Log Out</string>
     <string name="done">Done</string>
+
+    <!--Booking-->
+    <string name="total">Total</string>
 
     <string-array name="bus_travel_tips">
         <item>Reserve tickets ahead for the best deals and assured seating.</item>

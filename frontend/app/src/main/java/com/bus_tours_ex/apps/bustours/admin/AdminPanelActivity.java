@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bus_tours_ex.apps.bustours.R;
+import com.google.android.material.button.MaterialButton;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -23,10 +24,9 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
 
     private TextView createAdmin, tourPhoto;
     private final int REQUEST_CODE_TOUR_PHOTO = 200;
-    private final int REQUEST_CODE_MANAGER_PHOTO = 201;
     private String TAG = "IMAGE_CHOOSER_E";
     private ImageView tourImage;
-    private CircleImageView photoManager;
+    private MaterialButton createManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,19 +35,19 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         createAdmin = findViewById(R.id.create_admin_text);
         tourPhoto = findViewById(R.id.upload_image_text_view);
         tourImage = findViewById(R.id.tour_image);
-        photoManager = findViewById(R.id.photo_manager);
+        createManager = findViewById(R.id.create_manager_button);
 
         tourPhoto.setOnClickListener(this::onClick);
         createAdmin.setOnClickListener(this::onClick);
-        photoManager.setOnClickListener(this::onClick);
+        createManager.setOnClickListener(this::onClick);
 
     }
 
-    private void goToGallery(int requestCode){
+    private void goToGallery(){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), requestCode);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_TOUR_PHOTO);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -57,14 +57,9 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
                 Uri selectedImageUri = data.getData();
                 if (selectedImageUri == null) return;
 
-                switch (requestCode) {
-                    case REQUEST_CODE_TOUR_PHOTO:
-                        tourImage.setImageURI(selectedImageUri);
-                        tourPhoto.setText("Change Tour Photo");
-                        break;
-                    case REQUEST_CODE_MANAGER_PHOTO:
-                        photoManager.setImageURI(selectedImageUri);
-                        break;
+                if(REQUEST_CODE_TOUR_PHOTO == requestCode){
+                    tourImage.setImageURI(selectedImageUri);
+                    tourPhoto.setText("Change Tour Photo");
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 Log.e(TAG, "Selecting picture cancelled");
@@ -77,12 +72,12 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.photo_manager) {
-            goToGallery(REQUEST_CODE_MANAGER_PHOTO);
-        } else if (id == R.id.create_admin_text) {
+        if (id == R.id.create_admin_text) {
             startActivity(new Intent(getApplicationContext(), AdminCreationActivity.class));
         } else if (id == R.id.upload_image_text_view) {
-            goToGallery(REQUEST_CODE_TOUR_PHOTO);
+            goToGallery();
+        }else if (id == R.id.create_manager_button) {
+            startActivity(new Intent(getApplicationContext(), ManagerAdditionActivity.class));
         }
     }
 
