@@ -29,7 +29,7 @@ public class LoginFragment extends Fragment {
         loginAsGuestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), AdminPanelActivity.class));
+                startActivity(new Intent(getContext(), MainActivity.class));
             }
         });
 

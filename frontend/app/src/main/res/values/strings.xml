@@ -39,6 +39,7 @@
     <string name="tour_pick_up">Pick Up</string>
     <string name="see_all_reservations">See All Reservations</string>
     <string name="all_reservations">All Reservations</string>
+    <string name="all_managers">All Managers</string>
 
     <!--Users-->
     <string name="log_out">Log Out</string>
@@ -46,6 +47,9 @@
 
     <!--Booking-->
     <string name="total">Total</string>
+
+    <!--Likes-->
+    <string name="likes">Likes</string>
 
     <string-array name="bus_travel_tips">
         <item>Reserve tickets ahead for the best deals and assured seating.</item>
@@ -59,5 +63,7 @@
         <item>Consider a travel pillow and earplugs for overnight or long rides.</item>
         <item>Stay aware of your itinerary, stops, and transfers.</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

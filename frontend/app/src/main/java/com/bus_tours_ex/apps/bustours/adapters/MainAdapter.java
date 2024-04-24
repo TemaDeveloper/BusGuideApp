@@ -25,11 +25,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     private ArrayList<Trip> tripList;
     private Context context;
 
-    public void filterList(ArrayList<Trip> filterlist) {
-        tripList = filterlist;
-        notifyDataSetChanged();
-    }
-
     public MainAdapter(ArrayList<Trip> tripList, Context context) {
         this.tripList = tripList;
         this.context = context;
