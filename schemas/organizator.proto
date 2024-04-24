@@ -10,8 +10,9 @@ message Organizator {
 	optional string email = 6;
 	optional string whatsapp_number = 7;
 	optional string tg_tag = 8; /* e.g. MyOrg <=> tg.me/MyOrg */
-	optional string viber = 9;
-	optional int32 id = 10;
+	optional string viber_number = 9;
+	/* optional since when requesting to create Organizator you don't supply id */
+	optional int32 id = 10; 
 }
 
 message Trip {
@@ -33,9 +34,9 @@ message PickUpPoint {
 }
 
 message Review {
-	int32 stars;
-	int32 description;
-	int32 user_id
+	int32 stars = 1;
+	int32 description = 2;
+	int32 user_id = 3;
 }
 
 message User {

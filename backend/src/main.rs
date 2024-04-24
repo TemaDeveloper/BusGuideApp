@@ -1,19 +1,20 @@
 use axum::{
+    body::Body,
     extract::{self, multipart::Multipart},
-    http::StatusCode,
+    http::{header, Response, StatusCode},
+    response::IntoResponse,
     routing::{get, post},
     Extension, Json, Router,
 };
 use backend::schemas;
 use bytes::BytesMut;
 use dotenv::dotenv;
-
 use sqlx::postgres::PgPoolOptions;
-
-use std::env;
+use std::{convert::Infallible, env};
 use tokio::net::TcpListener;
 
 const AVATAR_SIZE_LIMIT: usize = 100 * 1024 * 1024; /* 100mb */
+const IMG_CHUNK_SIZE: usize = 5 * 1024 * 1024; /* 5mb */
 
 #[tokio::main]
 async fn main() {
@@ -28,6 +29,7 @@ async fn main() {
     let app = Router::new()
         .route("/organizator", post(create_organizator))
         .route("/organizator/:id", get(get_organizator))
+        .route("/organizator/:id/avatar", get(get_organizator_avatar))
         .layer(Extension(db_conn));
 
     let listener = TcpListener::bind("127.0.0.1:3000")
@@ -39,11 +41,46 @@ async fn main() {
     }
 }
 
-async fn get_organizator_img(
+/// If you don't understand where I got those magic numbers from
+/// I don't understand either, I asked ChatGpt and prayed they were right
+fn bytes_to_img_format(bytes: &[u8]) -> Option<&'static str> {
+    match bytes {
+        [0x89, b'P', b'N', b'G', 0x0D, 0x0A, 0x1A, 0x0A, ..] => Some("image/png"),
+        [0xFF, 0xD8, 0xFF, ..] => Some("image/jpeg"),
+        [b'R', b'I', b'F', b'F', _, _, _, _, b'W', b'E', b'B', b'P', ..] => Some("image/webp"),
+        _ => None,
+    }
+}
+
+async fn get_organizator_avatar(
     extract::Path(id): extract::Path<i32>,
     Extension(db_conn): Extension<sqlx::PgPool>,
-) -> (StatusCode, Json<schemas::Organizator>) {
-    todo!()
+) -> impl IntoResponse {
+    let img_bytes = sqlx::query!("SELECT avatar_img FROM organizators WHERE id = $1", id)
+        .fetch_one(&db_conn)
+        .await
+        .unwrap()
+        .avatar_img
+        .unwrap_or_default();
+
+    if let Some(format) = bytes_to_img_format(&img_bytes) {
+        let chunks = img_bytes.chunks(IMG_CHUNK_SIZE)
+            .map(Vec::from) /* copy data */
+            .map(Ok::<_, Infallible>) /* transform into Result<Vec<u8>, Infallible> */
+            .collect::<Vec<_>>(); /* wierd lifetime issues */
+
+        Response::builder()
+            .status(StatusCode::OK)
+            .header(header::CONTENT_TYPE, format)
+            .body(Body::from_stream(
+                tokio_stream::iter(chunks)))
+            .unwrap()
+    } else {
+        Response::builder()
+            .status(StatusCode::NOT_FOUND)
+            .body(Body::from(img_bytes))
+            .unwrap()
+    }
 }
 
 async fn get_organizator(
@@ -51,7 +88,7 @@ async fn get_organizator(
     Extension(db_conn): Extension<sqlx::PgPool>,
 ) -> (StatusCode, Json<schemas::Organizator>) {
     let result = sqlx::query!(
-        "SELECT name, last_name, regular_number, email, whatsapp_number, tg_tag FROM organizators WHERE id = $1",
+        "SELECT  id, avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag, viber_number  FROM organizators WHERE id = $1",
         id
     )
     .fetch_one(&db_conn)
@@ -60,13 +97,15 @@ async fn get_organizator(
     match result {
         Ok(record) => {
             let organizator = schemas::Organizator {
+                id: Some(record.id),
                 name: record.name,
                 last_name: record.last_name,
                 regular_number: record.regular_number,
                 email: record.email,
                 whatsapp_number: record.whatsapp_number,
                 tg_tag: record.tg_tag,
-                ..Default::default() // Fill in missing fields like avatar_img
+                viber_number: record.viber_number,
+                avatar_img: Some(format!("127.0.0.1:3000/organizator/{id}/avatar")),
             };
             (StatusCode::OK, Json(organizator))
         }
@@ -87,15 +126,21 @@ async fn create_organizator(
     while let Some(mut field) = file.next_field().await.unwrap() {
         if let Some(name) = field.name() {
             match name {
-                "info" => info.extend_from_slice(&field.chunk().await.unwrap().unwrap()),
-                "avatar" => {
-                    if avatar.len() >= AVATAR_SIZE_LIMIT {
-                        return (
-                            StatusCode::EXPECTATION_FAILED,
-                            "Avatar size exceeded ".to_string(),
-                        );
+                "info" => {
+                    while let Some(chunk) = field.chunk().await.unwrap() {
+                        info.extend_from_slice(&chunk);
                     }
-                    avatar.extend_from_slice(&field.chunk().await.unwrap().unwrap());
+                },
+                "avatar" => {
+                    while let Some(chunk) = field.chunk().await.unwrap() {
+                        if avatar.len() >= AVATAR_SIZE_LIMIT {
+                            return (
+                                StatusCode::EXPECTATION_FAILED,
+                                "Avatar size exceeds size limit".to_string(),
+                            )
+                        }
+                        avatar.extend_from_slice(&chunk);
+                    }
                 }
                 _ => {
                     return (
@@ -117,9 +162,9 @@ async fn create_organizator(
     let res = sqlx::query!(
         r#"
         INSERT INTO organizators 
-            (avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag)
+            (avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag, viber_number)
         VALUES 
-            ($1, $2, $3, $4, $5, $6, $7)
+            ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING id
         "#,
         &avatar as &[u8], /* just so dumb compiler understands what we want from it */
@@ -128,7 +173,8 @@ async fn create_organizator(
         info.regular_number,
         info.email,
         info.whatsapp_number,
-        info.tg_tag
+        info.tg_tag,
+        info.viber_number
     )
     .fetch_one(&db_conn)
     .await
