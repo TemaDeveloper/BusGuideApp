@@ -19,10 +19,33 @@
     <string name="TourManager">Tour Manager</string>
 
     <!--Auth-->
-    <string name="login_or">or login with</string>
-    <string name="login_forget_pass">Forget Password?</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+
+    <!--Admin-->
+    <string name="createButton">Create</string>
+    <string name="new_admin_creation">Make New Admin</string>
+    <string name="upload_tour_image">Upload Tour Image</string>
+    <string name="tour_info">Tour Info</string>
+    <string name="tour_trip">Trip Title</string>
+    <string name="tour_price">Trip Price</string>
+    <string name="manager_info">Manager Info</string>
+    <string name="manager_telegram">Telegram NickName</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="viber">Viber</string>
+    <string name="add_manager">Create Manager</string>
+    <string name="add_manager_by_email">Add Manager by Email</string>
+    <string name="tour_pick_up">Pick Up</string>
+    <string name="see_all_reservations">See All Reservations</string>
+    <string name="all_reservations">All Reservations</string>
+
+    <!--Users-->
+    <string name="log_out">Log Out</string>
+    <string name="done">Done</string>
+
+    <!--Booking-->
+    <string name="total">Total</string>
 
     <string-array name="bus_travel_tips">
         <item>Reserve tickets ahead for the best deals and assured seating.</item>

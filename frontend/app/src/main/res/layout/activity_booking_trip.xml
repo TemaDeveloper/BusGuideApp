@@ -23,6 +23,7 @@
             android:id="@+id/back_image_view"/>
 
         <LinearLayout
+            android:id="@+id/lin_fields"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -178,6 +179,26 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lin_fields"
+            android:layout_margin="10dp"
+            android:text="@string/total"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/price_tour_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/textView"
+            android:layout_alignBottom="@+id/textView"
+            android:layout_toRightOf="@+id/textView"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
 
     </RelativeLayout>
