@@ -16,7 +16,7 @@ import com.bus_tours_ex.apps.bustours.models.Trip;
 
 import java.util.ArrayList;
 
-public class LikeFragment extends Fragment {
+public class LikeFragment extends Fragment implements OnItemDeleteListener{
 
     private RecyclerView recyclerView;
     private ArrayList<Trip> likedTrips;
@@ -29,7 +29,9 @@ public class LikeFragment extends Fragment {
 
         likedTrips = new ArrayList<>();
         likedTrips.add(new Trip("Egypt", "https://www.rjtravelagency.com/wp-content/uploads/2023/07/Cairo-Egypt.jpg", 70));
-        likesAdapter = new LikesAdapter(likedTrips, getContext());
+        likesAdapter = new LikesAdapter(likedTrips, getContext(), this::onDelete);
+
+
 
         recyclerView = view.findViewById(R.id.likes_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -38,4 +40,10 @@ public class LikeFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onDelete(int position) {
+        likesAdapter.deleteItem(position);
+    }
+
 }

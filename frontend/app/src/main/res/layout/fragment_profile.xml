@@ -117,7 +117,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/cardLogin"
-                android:layout_marginTop="20dp"
+                android:layout_marginVertical="20dp"
+                android:layout_marginHorizontal="20dp"
                 android:elevation="8dp"
                 app:cardCornerRadius="8dp">
 
@@ -151,6 +152,31 @@
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:id="@+id/lin_reservations">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:text="@string/my_reservations"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/my_reservations_recycler_view"/>
+
+            </LinearLayout>
+
+
+
 
         </LinearLayout>
 

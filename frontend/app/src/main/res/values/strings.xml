@@ -50,6 +50,13 @@
 
     <!--Likes-->
     <string name="likes">Likes</string>
+    <string name="pop_up_title">Are you sure?</string>
+    <string name="pop_up_description">If you dislike this trip, you never find it.</string>
+    <string name="pop_up_ok">Ok</string>
+    <string name="pop_up_cancel">Cancel</string>
+
+    <!--Profile-->
+    <string name="my_reservations">My Reservations</string>
 
     <string-array name="bus_travel_tips">
         <item>Reserve tickets ahead for the best deals and assured seating.</item>
