@@ -12,7 +12,7 @@ use hyper::header;
 use serde::{Deserialize, Serialize};
 use crate::{constants, utils};
 
-pub async fn create(
+pub async fn register(
     Extension(db_conn): Extension<sqlx::PgPool>,
     mut req: Multipart,
 ) -> impl IntoResponse {
@@ -67,7 +67,7 @@ pub enum GetResponse {
 
 /// To keep naming consistent, this one actually
 /// is actually used to authenticate a user
-pub async fn get(
+pub async fn auth(
     Extension(db_conn): Extension<sqlx::PgPool>,
     Json(user_info): Json<GetReqBody>
 ) -> (StatusCode, Json<GetResponse>) {

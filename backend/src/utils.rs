@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use axum::extract::Multipart;
-use bytes::{Bytes, BytesMut};
+use bytes::Bytes;
 
 /// If you don't understand where I got those magic numbers from
 /// I don't understand either, I asked ChatGpt and prayed they were right

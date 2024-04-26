@@ -16,12 +16,13 @@ message Organizator {
 }
 
 message Trip {
-	Organizator organizator = 6;
 	string title = 1;
 	string image = 2;
 	int32  price			= 3;
 	string plan				= 5;
 	string category			= 7;
+
+	Organizator organizator = 6;
 	repeated Review reviews = 8;
 	repeated PickUpPoint pick_up_points = 9;
 }
@@ -31,8 +32,10 @@ message PickUpPoint {
 }
 
 message Review {
+	/* [1, 5] \in N */
 	int32 rating = 1;
-	int32 description = 2;
+	string description = 2;
+
 	int32 user_id = 3;
 }
 

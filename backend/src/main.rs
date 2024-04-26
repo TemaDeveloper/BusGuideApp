@@ -1,13 +1,11 @@
 use axum::{
     body::Body,
-    extract::{self, multipart::Multipart},
+    extract,
     http::{header, Response, StatusCode},
     response::IntoResponse,
     routing::{get, post},
-    Extension, Json, Router,
+    Extension, Router,
 };
-use backend::schemas;
-use bytes::BytesMut;
 use dotenv::dotenv;
 use sqlx::postgres::PgPoolOptions;
 use std::{convert::Infallible, env};
@@ -15,6 +13,8 @@ use tokio::net::TcpListener;
 
 mod constants;
 mod user;
+mod trip;
+mod review;
 mod utils;
 
 #[tokio::main]
@@ -28,12 +28,16 @@ async fn main() {
         .expect("Could not connect to DB, check url");
 
     let app = Router::new()
-        .route("/organizator", post(create_organizator))
-        .route("/organizator/:id", get(get_organizator))
         .route("/organizator/:id/avatar", get(get_organizator_avatar))
-        .route("/user", post(user::create))
-        .route("/user", get(user::get))
+
+        .route("/register", post(user::register))
+        .route("/user-auth", get(user::auth))
         .route("/user/:id/avatar", get(user::get_avatar))
+
+        .route("/trip", post(trip::create))
+        .route("/trip/:id", get(trip::get))
+        .route("/trip/:id/image", get(trip::get_image))
+        .route("/trip/:id/review", post(review::create))
         .layer(Extension(db_conn));
 
     let listener = TcpListener::bind("127.0.0.1:3000")
@@ -74,104 +78,4 @@ async fn get_organizator_avatar(
             .body(Body::from(img_bytes))
             .unwrap()
     }
-}
-
-async fn get_organizator(
-    extract::Path(id): extract::Path<i32>,
-    Extension(db_conn): Extension<sqlx::PgPool>,
-) -> (StatusCode, Json<schemas::Organizator>) {
-    let result = sqlx::query!(
-        "SELECT  id, avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag, viber_number  FROM organizators WHERE id = $1",
-        id
-    )
-    .fetch_one(&db_conn)
-    .await;
-
-    match result {
-        Ok(record) => {
-            let organizator = schemas::Organizator {
-                id: Some(record.id),
-                name: record.name,
-                last_name: record.last_name,
-                regular_number: record.regular_number,
-                email: record.email,
-                whatsapp_number: record.whatsapp_number,
-                tg_tag: record.tg_tag,
-                viber_number: record.viber_number,
-                avatar_img: Some(format!("127.0.0.1:3000/organizator/{id}/avatar")),
-            };
-            (StatusCode::OK, Json(organizator))
-        }
-        Err(_) => (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            Json(schemas::Organizator::default()),
-        ),
-    }
-}
-
-async fn create_organizator(
-    Extension(db_conn): Extension<sqlx::PgPool>,
-    mut file: Multipart,
-) -> (StatusCode, String) {
-    let mut info = BytesMut::new();
-    let mut avatar = BytesMut::new();
-
-    while let Some(mut field) = file.next_field().await.unwrap() {
-        if let Some(name) = field.name() {
-            match name {
-                "info" => {
-                    while let Some(chunk) = field.chunk().await.unwrap() {
-                        info.extend_from_slice(&chunk);
-                    }
-                }
-                "avatar" => {
-                    while let Some(chunk) = field.chunk().await.unwrap() {
-                        if avatar.len() >= constants::AVATAR_SIZE_LIMIT {
-                            return (
-                                StatusCode::EXPECTATION_FAILED,
-                                "Avatar size exceeds size limit".to_string(),
-                            );
-                        }
-                        avatar.extend_from_slice(&chunk);
-                    }
-                }
-                _ => {
-                    return (
-                        StatusCode::EXPECTATION_FAILED,
-                        "Not correct name found in chunk".to_string(),
-                    )
-                }
-            }
-        } else {
-            return (
-                StatusCode::EXPECTATION_FAILED,
-                "No field name is present".to_string(),
-            );
-        }
-    }
-
-    let info: schemas::Organizator = serde_json::from_slice(&info).expect("Unable to parse info");
-
-    let res = sqlx::query!(
-        r#"
-        INSERT INTO organizators 
-            (avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag, viber_number)
-        VALUES 
-            ($1, $2, $3, $4, $5, $6, $7, $8)
-        RETURNING id
-        "#,
-        &avatar as &[u8], /* just so dumb compiler understands what we want from it */
-        info.name,
-        info.last_name,
-        info.regular_number,
-        info.email,
-        info.whatsapp_number,
-        info.tg_tag,
-        info.viber_number
-    )
-    .fetch_one(&db_conn)
-    .await
-    .unwrap();
-
-    (StatusCode::CREATED, format!("User id: {}", res.id))
 }

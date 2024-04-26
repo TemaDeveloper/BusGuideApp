@@ -43,6 +43,6 @@ CREATE TABLE organizators (
     tg_tag VARCHAR(255),
     viber_number VARCHAR(255),
 
-	trip_id INT NOT NULL,
+    trip_id INT NOT NULL,
     FOREIGN KEY (trip_id) REFERENCES trips(id)
 );
