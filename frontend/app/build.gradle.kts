@@ -1,5 +1,8 @@
+import com.google.protobuf.gradle.id
+
 plugins {
     alias(libs.plugins.androidApplication)
+    id("com.google.protobuf") version "0.9.4"
 }
 
 android {
@@ -31,6 +34,22 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.4"
+    }
+
+    generateProtoTasks {
+        all().configureEach {
+            builtins {
+                id("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation(libs.appcompat)
@@ -54,5 +73,8 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("se.emilsjolander:StickyScrollViewItems:1.1.0")
     implementation("com.google.android.material:material:1.4.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.google.protobuf:protobuf-javalite:3.18.0")
 
 }

@@ -1,7 +1,10 @@
 package com.bus_tours_ex.apps.bustours.ui.profile;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +25,21 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
     private MaterialButton loginButton;
-    private ImageView editImage;
     private RecyclerView myReservationsRecyclerView;
     private ArrayList<Trip> trips;
     private MainAdapter adapterMyReservations;
     private LinearLayout linReservations;
+    //Picking Image
+    private CircleImageView avatarImageView;
+    private final int REQUEST_CODE_AVATAR_PHOTO = 200;
+    private String TAG = "IMAGE_CHOOSER_E";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,9 +48,9 @@ public class ProfileFragment extends Fragment {
         View root = binding.getRoot();
 
         loginButton = root.findViewById(R.id.loginButton);
-        editImage = root.findViewById(R.id.editImage);
         myReservationsRecyclerView = root.findViewById(R.id.my_reservations_recycler_view);
         linReservations = root.findViewById(R.id.lin_reservations);
+        avatarImageView = root.findViewById(R.id.profileImage);
 
         trips = new ArrayList<>();
         trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
@@ -54,12 +62,13 @@ public class ProfileFragment extends Fragment {
         myReservationsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         myReservationsRecyclerView.setAdapter(adapterMyReservations);
 
-        editImage.setOnClickListener(new View.OnClickListener() {
+        avatarImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(), EditActivity.class));
+                goToGallery();
             }
         });
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +77,31 @@ public class ProfileFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private void goToGallery(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_AVATAR_PHOTO);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                Uri selectedImageUri = data.getData();
+                if (selectedImageUri == null) return;
+
+                if(requestCode == REQUEST_CODE_AVATAR_PHOTO){
+                    avatarImageView.setImageURI(selectedImageUri);
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.e(TAG, "Selecting picture cancelled");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in onActivityResult : " + e.getMessage());
+        }
     }
 
     @Override

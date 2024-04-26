@@ -40,6 +40,12 @@
     <string name="see_all_reservations">See All Reservations</string>
     <string name="all_reservations">All Reservations</string>
     <string name="all_managers">All Managers</string>
+    <string-array name="categories">
+        <item>New</item>
+        <item>Popular</item>
+        <item>Europe</item>
+        <item>For Students</item>
+    </string-array>
 
     <!--Users-->
     <string name="log_out">Log Out</string>
