@@ -1,8 +1,6 @@
 {
 	"name": "Eduard",
-	"last_name": "Kechedzhiev",
-	"regular_number": "N/A",
-	"email": "some@mail.f",
-	"whatsapp_number": "N/A",
-	"tg_tag": "MyTag"
+	"email": "ed.kech@mail.ru",
+	"password": "HELLO_pass",
+	"is_admin": true
 }

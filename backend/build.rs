@@ -1,14 +1,6 @@
-use std::fs;
-use std::path::Path;
 use prost_build::Config;
 
 fn main() -> anyhow::Result<()> {
-    // Ensure the schemas directory exists
-    let schemas_dir = "schemas";
-    if !Path::new(schemas_dir).exists() {
-        fs::create_dir(schemas_dir)?;
-    }
-
     let mut config = Config::new();
     /* 
      * those derives are there to do type reflection which is necessary for external libraries to

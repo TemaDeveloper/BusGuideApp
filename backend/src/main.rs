@@ -13,8 +13,9 @@ use sqlx::postgres::PgPoolOptions;
 use std::{convert::Infallible, env};
 use tokio::net::TcpListener;
 
-const AVATAR_SIZE_LIMIT: usize = 100 * 1024 * 1024; /* 100mb */
-const IMG_CHUNK_SIZE: usize = 5 * 1024 * 1024; /* 5mb */
+mod constants;
+mod user;
+mod utils;
 
 #[tokio::main]
 async fn main() {
@@ -30,6 +31,9 @@ async fn main() {
         .route("/organizator", post(create_organizator))
         .route("/organizator/:id", get(get_organizator))
         .route("/organizator/:id/avatar", get(get_organizator_avatar))
+        .route("/user", post(user::create))
+        .route("/user", get(user::get))
+        .route("/user/:id/avatar", get(user::get_avatar))
         .layer(Extension(db_conn));
 
     let listener = TcpListener::bind("127.0.0.1:3000")
@@ -38,17 +42,6 @@ async fn main() {
 
     if let Err(err) = axum::serve(listener, app).await {
         tracing::error!("{}", err.to_string());
-    }
-}
-
-/// If you don't understand where I got those magic numbers from
-/// I don't understand either, I asked ChatGpt and prayed they were right
-fn bytes_to_img_format(bytes: &[u8]) -> Option<&'static str> {
-    match bytes {
-        [0x89, b'P', b'N', b'G', 0x0D, 0x0A, 0x1A, 0x0A, ..] => Some("image/png"),
-        [0xFF, 0xD8, 0xFF, ..] => Some("image/jpeg"),
-        [b'R', b'I', b'F', b'F', _, _, _, _, b'W', b'E', b'B', b'P', ..] => Some("image/webp"),
-        _ => None,
     }
 }
 
@@ -63,8 +56,9 @@ async fn get_organizator_avatar(
         .avatar_img
         .unwrap_or_default();
 
-    if let Some(format) = bytes_to_img_format(&img_bytes) {
-        let chunks = img_bytes.chunks(IMG_CHUNK_SIZE)
+    if let Some(format) = utils::bytes_to_img_format(&img_bytes) {
+        let chunks = img_bytes
+            .chunks(constants::IMG_CHUNK_SIZE)
             .map(Vec::from) /* copy data */
             .map(Ok::<_, Infallible>) /* transform into Result<Vec<u8>, Infallible> */
             .collect::<Vec<_>>(); /* wierd lifetime issues */
@@ -72,8 +66,7 @@ async fn get_organizator_avatar(
         Response::builder()
             .status(StatusCode::OK)
             .header(header::CONTENT_TYPE, format)
-            .body(Body::from_stream(
-                tokio_stream::iter(chunks)))
+            .body(Body::from_stream(tokio_stream::iter(chunks)))
             .unwrap()
     } else {
         Response::builder()
@@ -130,14 +123,14 @@ async fn create_organizator(
                     while let Some(chunk) = field.chunk().await.unwrap() {
                         info.extend_from_slice(&chunk);
                     }
-                },
+                }
                 "avatar" => {
                     while let Some(chunk) = field.chunk().await.unwrap() {
-                        if avatar.len() >= AVATAR_SIZE_LIMIT {
+                        if avatar.len() >= constants::AVATAR_SIZE_LIMIT {
                             return (
                                 StatusCode::EXPECTATION_FAILED,
                                 "Avatar size exceeds size limit".to_string(),
-                            )
+                            );
                         }
                         avatar.extend_from_slice(&chunk);
                     }

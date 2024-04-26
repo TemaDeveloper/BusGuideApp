@@ -18,7 +18,7 @@ message Organizator {
 message Trip {
 	Organizator organizator = 6;
 	string title = 1;
-	string images = 2;
+	string image = 2;
 	int32  price			= 3;
 	string plan				= 5;
 	string category			= 7;
@@ -27,13 +27,11 @@ message Trip {
 }
 
 message PickUpPoint {
-	double longitude   = 1;
-	double latitude	   = 2;
 	string description = 3;
 }
 
 message Review {
-	int32 stars = 1;
+	int32 rating = 1;
 	int32 description = 2;
 	int32 user_id = 3;
 }
@@ -42,5 +40,6 @@ message User {
 	string name = 1;
 	optional string avatar = 2;
 	string email = 3;
+	optional string password = 5;
 	bool is_admin = 4;
 }
