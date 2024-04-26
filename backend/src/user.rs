@@ -18,7 +18,8 @@ pub async fn register(
     mut req: Multipart,
 ) -> impl IntoResponse {
     let req = utils::multipart_to_map(&mut req).await;
-    let avatar = req.get("avatar").unwrap();
+    let null_bytes = Bytes::default();
+    let avatar = req.get("avatar").unwrap_or(&null_bytes);
     let req: schemas::User = serde_json::from_slice(&req.get("info").unwrap()).unwrap();
 
     if avatar.len() >= constants::AVATAR_SIZE_LIMIT || utils::bytes_to_img_format(&avatar).is_none()

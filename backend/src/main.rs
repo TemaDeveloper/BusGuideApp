@@ -38,6 +38,7 @@ async fn main() {
 
         .route("/trip", post(trip::create))
         .route("/trip/:id", get(trip::get))
+        .route("/trip/all", get(trip::get_all))
         .route("/trip/:id/image", get(trip::get_image))
         .route("/trip/:id/review", post(review::create))
         .layer(Extension(db_conn));

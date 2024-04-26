@@ -6,6 +6,7 @@ use axum::{
 use backend::schemas;
 use bytes::Bytes;
 use hyper::{header, StatusCode};
+use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
 use crate::{constants, review, utils};
@@ -185,5 +186,35 @@ pub async fn get_image(
             .status(StatusCode::NOT_FOUND)
             .body(Body::from(img_bytes))
             .unwrap()
+    }
+}
+
+#[derive(Deserialize, Serialize, Default)]
+struct GetAllResponse {
+    trips_ids: Vec<i32>
+}
+
+pub async fn get_all(
+    Extension(db_conn): Extension<sqlx::PgPool>
+) -> impl IntoResponse {
+    
+    let q = sqlx::query!("SELECT id FROM trips;")
+        .fetch_all(&db_conn)
+        .await;
+
+    if let Ok(q) = q {
+        (
+            StatusCode::OK,
+            Json(GetAllResponse {
+                trips_ids: q.iter()
+                    .map(|q| q.id)
+                    .collect()
+            })
+        )
+    } else {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(GetAllResponse::default())
+        )
     }
 }
