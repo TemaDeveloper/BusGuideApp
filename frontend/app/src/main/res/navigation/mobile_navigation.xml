@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
+        android:id="@+id/navigation_likes"
+        android:name="com.bus_tours_ex.apps.bustours.ui.likes.LikeFragment"
+        android:label="@string/likes"
+        tools:layout="@layout/fragment_like" />
+
+    <fragment
         android:id="@+id/navigation_trips"
         android:name="com.bus_tours_ex.apps.bustours.ui.trips.TripsFragment"
         android:label="@string/title_trips"
