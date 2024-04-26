@@ -72,9 +72,7 @@ pub async fn auth(
     Json(user_info): Json<GetReqBody>,
 ) -> (StatusCode, Json<GetResponse>) {
     let q = sqlx::query!(
-        r#"
-        SELECT * FROM users WHERE (name = $1 OR email = $2) and (password = $3);
-    "#,
+        "SELECT * FROM users WHERE (name = $1 OR email = $2) and (password = $3);",
         user_info.name.unwrap_or_default(),
         user_info.email.unwrap_or_default(),
         user_info.password
@@ -109,7 +107,8 @@ pub async fn get_avatar(
         .await
         .unwrap()
         .avatar
-        .unwrap_or_default();
+        .unwrap_or(constants::DEFUALT_AVATAR_BYTES.to_vec());
+
 
     if let Some(format) = utils::bytes_to_img_format(&avatar_bytes) {
         let chunks = avatar_bytes
