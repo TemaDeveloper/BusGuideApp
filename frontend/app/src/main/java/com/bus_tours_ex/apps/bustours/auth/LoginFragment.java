@@ -65,7 +65,6 @@ public class LoginFragment extends Fragment {
         if(checkFields(EMAIL, PASSWORD)){
             login(EMAIL, PASSWORD);
         }
-
     }
 
     private void login(String EMAIL, String PASSWORD){

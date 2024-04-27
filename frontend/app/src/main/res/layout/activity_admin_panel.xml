@@ -112,27 +112,45 @@
             android:textColor="@color/black"
             android:layout_margin="10dp"/>
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/photo_manager"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginHorizontal="10dp"/>
+
+        <EditText
+            android:id="@+id/manager_name_admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name"/>
 
         <EditText
             android:id="@+id/manager_email_admin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/add_manager_by_email"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="or"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="10dp"/>
+            android:hint="@string/email" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/create_manager_button"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/telegram_nickname_manager"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_manager"
-            android:layout_gravity="center_horizontal"
-            android:textAllCaps="false"
-            />
+            android:hint="@string/manager_telegram"/>
+
+        <EditText
+            android:id="@+id/watsapp_manager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/whatsapp"/>
+
+        <EditText
+            android:id="@+id/viber_manager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/viber"/>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/create_trip_button"

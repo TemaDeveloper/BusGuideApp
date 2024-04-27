@@ -26,6 +26,13 @@ public class User {
         this.id = id;
     }
 
+    public User(String name, String email, String password, boolean isAdmin) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
+
     public User() {
     }
 

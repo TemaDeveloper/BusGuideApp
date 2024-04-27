@@ -22,11 +22,16 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
 import com.bus_tours_ex.apps.bustours.models.Trip;
+import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -42,11 +47,14 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
     private final int REQUEST_CODE_TOUR_PHOTO = 200;
     private String TAG = "IMAGE_CHOOSER_E";
     private ImageView tourImage;
-    private MaterialButton createManager, allReservationsButton;
-    private EditText tripTitle, tripCategory, tripPlan, tripPrice, tripPickUp;
+    private MaterialButton allReservationsButton;
+    private EditText tripTitle, tripPlan, tripPrice, tripPickUp;
     private Spinner categoriesSpinner;
     private String[] categories;
     private String chosenCategory;
+    private InputStream iStream;
+    private final int REQUEST_CODE_MANAGER_PHOTO = 201;
+    private CircleImageView photoManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,9 +65,9 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
 
         tourPhoto.setOnClickListener(this::onClick);
         createAdmin.setOnClickListener(this::onClick);
-        createManager.setOnClickListener(this::onClick);
         allReservationsButton.setOnClickListener(this::onClick);
         logoutText.setOnClickListener(this::onClick);
+        photoManager.setOnClickListener(this::onClick);
 
     }
 
@@ -76,7 +84,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    private void create(){
+    private void create() throws IOException {
 
         String title = tripTitle.getText().toString();
         int price = Integer.valueOf(tripPrice.getText().toString());
@@ -87,18 +95,21 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         String json = gson.toJson(new Trip(title, price, plan, pickUp, chosenCategory));
         RequestBody info = RequestBody.create(MediaType.parse("application/json"), json);
 
-        File tripPictureFile = new File("path/to/trip/picture.png");
+        byte[] inputData = getBytes(iStream);
+
+        File tripPictureFile = new File(Arrays.toString(inputData));
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), tripPictureFile);
         MultipartBody.Part tripPicture = MultipartBody.Part.createFormData("image", tripPictureFile.getName(), requestFile);
 
-        File avatarFile = new File("path/to/organizator/avatar.png");
+        File avatarFile = new File(Arrays.toString(inputData));
         RequestBody avatarRequestFile = RequestBody.create(MediaType.parse("image/png"), avatarFile);
         MultipartBody.Part organizatorAvatar = MultipartBody.Part.createFormData("avatar_img", avatarFile.getName(), avatarRequestFile);
 
-        Call<Response> call = ApiInterface.createTrip(info, tripPicture, organizatorAvatar);
-        call.enqueue(new Callback<Response>() {
+        Call<Trip> call = APIClient.getApiService().createTrip(info, tripPicture, organizatorAvatar);
+
+        call.enqueue(new Callback<Trip>() {
             @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+            public void onResponse(Call<Trip> call, retrofit2.Response<Trip> response) {
                 if (response.isSuccessful()) {
                     // Handle success
                     Log.d("TripCreation", "Trip created successfully with ID: " + response.body().toString());
@@ -108,11 +119,23 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
             }
 
             @Override
-            public void onFailure(Call<Response> call, Throwable t) {
+            public void onFailure(Call<Trip> call, Throwable t) {
                 Log.e("TripCreation", "Error calling API", t);
             }
         });
 
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 
     private void init(){
@@ -124,21 +147,22 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         tripPrice = findViewById(R.id.tour_price_admin);
         tripPickUp = findViewById(R.id.tour_pick_up_admin);
         categoriesSpinner = findViewById(R.id.spinner_categories);
+        photoManager = findViewById(R.id.photo_manager);
 
         createAdmin = findViewById(R.id.create_admin_text);
         tourPhoto = findViewById(R.id.upload_image_text_view);
         tourImage = findViewById(R.id.tour_image);
-        createManager = findViewById(R.id.create_manager_button);
+
         allReservationsButton = findViewById(R.id.all_reservations_button);
         logoutText = findViewById(R.id.log_out_button);
 
     }
 
-    private void goToGallery(){
+    private void goToGallery(int request){
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_TOUR_PHOTO);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), request);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -146,11 +170,15 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         try {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 Uri selectedImageUri = data.getData();
+                iStream = getContentResolver().openInputStream(selectedImageUri);
+
                 if (selectedImageUri == null) return;
 
                 if(REQUEST_CODE_TOUR_PHOTO == requestCode){
                     tourImage.setImageURI(selectedImageUri);
                     tourPhoto.setText("Change Tour Photo");
+                }else if(REQUEST_CODE_MANAGER_PHOTO == requestCode){
+                    photoManager.setImageURI(selectedImageUri);
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 Log.e(TAG, "Selecting picture cancelled");
@@ -165,10 +193,10 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         int id = v.getId();
         if (id == R.id.create_admin_text) {
             startActivity(new Intent(getApplicationContext(), AdminCreationActivity.class));
-        } else if (id == R.id.upload_image_text_view) {
-            goToGallery();
-        }else if (id == R.id.create_manager_button) {
-            startActivity(new Intent(getApplicationContext(), ManagerAdditionActivity.class));
+        }else if (id == R.id.photo_manager) {
+            goToGallery(REQUEST_CODE_MANAGER_PHOTO);
+        }else if (id == R.id.upload_image_text_view) {
+            goToGallery(REQUEST_CODE_TOUR_PHOTO);
         }else if (id == R.id.all_reservations_button) {
             startActivity(new Intent(getApplicationContext(), AllReservationsActivity.class));
         }else if (id == R.id.log_out_button) {
