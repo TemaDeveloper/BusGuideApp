@@ -73,9 +73,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
 
     private void createSpinner(){
         //Getting the instance of Spinner and applying OnItemSelectedListener on it
-
         categoriesSpinner.setOnItemSelectedListener(this);
-
         //Creating the ArrayAdapter instance having the country list
         ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item, categories);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -201,6 +199,12 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
             startActivity(new Intent(getApplicationContext(), AllReservationsActivity.class));
         }else if (id == R.id.log_out_button) {
             startActivity(new Intent(getApplicationContext(), AuthActivity.class));
+        }else if (id == R.id.create_trip_button) {
+            try {
+                create();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
