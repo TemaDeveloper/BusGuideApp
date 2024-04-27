@@ -21,6 +21,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -66,18 +71,28 @@ public class SignupFragment extends Fragment {
         String json = gson.toJson(new User(email, name, password, false));
         RequestBody userInfo = RequestBody.create(MediaType.parse("application/json"), json);
 
-        Call<User> callRegister = apiInterface.registerUser(userInfo, null);
-        callRegister.enqueue(new Callback<User>() {
+        Call<ResponseBody> callRegister = apiInterface.registerUser(userInfo, null);
+        callRegister.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    SharedPrefManager.getInstance(getContext()).setEmail(email);
-                    startActivity(new Intent(getContext(), MainActivity.class).putExtra("email", email));
+
+                    String jsonString = null;
+                    try {
+                        jsonString = response.body().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    System.out.println(jsonString);
+                    int id = Integer.parseInt(jsonString);
+                    SharedPrefManager.getInstance(getContext()).setSavedId(id);
+                    startActivity(new Intent(getContext(), MainActivity.class).putExtra("id", id));
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d("FAIL_REGISTER", t.getMessage());
             }
         });

@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.models.User;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -15,6 +17,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -28,7 +31,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("register")
-    Call<User> registerUser(@Part("info") RequestBody userInfo, @Part MultipartBody.Part avatar);
+    Call<ResponseBody> registerUser(@Part("info") RequestBody userInfo, @Part MultipartBody.Part avatar);
 
     @FormUrlEncoded
     @GET("user-auth")

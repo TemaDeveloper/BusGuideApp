@@ -1,30 +1,28 @@
 package com.bus_tours_ex.apps.bustours.models;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
 
     @SerializedName("id")
-    int id;
+    @Expose
+    private int id;
     @SerializedName("avatar")
-    String avatar;
+    @Expose
+    private String avatar;
     @SerializedName("name")
-    String name;
+    @Expose
+    private String name;
     @SerializedName("email")
-    String email;
+    @Expose
+    private String email;
     @SerializedName("password")
-    String password;
+    @Expose
+    private String password;
     @SerializedName("is_admin")
-    boolean isAdmin;
-
-    public User(int id, String avatar, String name, String email, String password, boolean isAdmin) {
-        this.avatar = avatar;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.isAdmin = isAdmin;
-        this.id = id;
-    }
+    @Expose
+    private boolean isAdmin;
 
     public User(String name, String email, String password, boolean isAdmin) {
         this.name = name;
