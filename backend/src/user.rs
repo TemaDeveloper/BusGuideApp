@@ -18,11 +18,18 @@ pub async fn register(
     mut req: Multipart,
 ) -> impl IntoResponse {
     let req = utils::multipart_to_map(&mut req).await;
-    let null_bytes = Bytes::default();
-    let avatar = req.get("avatar").unwrap_or(&null_bytes);
+    let avatar = req.get("avatar")
+        .map_or(
+            constants::DEFUALT_AVATAR_BYTES.to_vec(), 
+            |a| if utils::bytes_to_img_format(a).is_some() {
+                a.to_vec()
+            } else {
+                constants::DEFUALT_AVATAR_BYTES.to_vec()
+            }
+    );
     let req: schemas::User = serde_json::from_slice(&req.get("info").unwrap()).unwrap();
 
-    if avatar.len() >= constants::AVATAR_SIZE_LIMIT || utils::bytes_to_img_format(&avatar).is_none()
+    if avatar.len() >= constants::AVATAR_SIZE_LIMIT
     {
         return (
             StatusCode::EXPECTATION_FAILED,
@@ -38,7 +45,7 @@ pub async fn register(
             ($1, $2, $3, $4, $5)
         RETURNING id
         "#,
-        avatar as &[u8], /* just so dumb compiler understands what we want from it */
+        &avatar as &[u8], /* just so dumb compiler understands what we want from it */
         req.name,
         req.email,
         req.password,
