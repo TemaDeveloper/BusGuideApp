@@ -31,7 +31,7 @@ async fn main() {
         .route("/organizator/:id/avatar", get(get_organizator_avatar))
 
         .route("/register", post(user::register))
-        .route("/user-auth", get(user::auth))
+        .route("/user-auth", post(user::auth))
         .route("/user/:id", get(user::get))
         .route("/user/:id/avatar", get(user::get_avatar))
         .route("/user/:id/avatar", patch(user::update_avatar))

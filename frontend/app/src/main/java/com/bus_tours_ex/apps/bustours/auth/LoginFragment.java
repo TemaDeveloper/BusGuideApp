@@ -14,12 +14,22 @@ import com.bus_tours_ex.apps.bustours.MainActivity;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.admin.AdminPanelActivity;
 import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
+import com.bus_tours_ex.apps.bustours.models.AuthInfo;
+import com.bus_tours_ex.apps.bustours.models.User;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,12 +79,47 @@ public class LoginFragment extends Fragment {
 
     private void login(String EMAIL, String PASSWORD){
         ApiInterface apiInterface = APIClient.getApiService();
-        Call<ResponseBody> callLogin = apiInterface.signIn(EMAIL, PASSWORD);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(new AuthInfo(null, EMAIL, PASSWORD));
+        RequestBody authInfo = RequestBody.create(MediaType.parse("application/json"), json);
+
+        Call<ResponseBody> callLogin = apiInterface.signIn(authInfo);
         callLogin.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                SharedPrefManager.getInstance(getContext()).setEmail(EMAIL);
-                startActivity(new Intent(getContext(), MainActivity.class).putExtra("email", EMAIL));
+                if (response.isSuccessful()) {
+
+                    String jsonString = null;
+                    try {
+                        jsonString = response.body().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(jsonString);
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    int userId = 0;
+                    boolean isAdmin = false;
+                    try {
+                        isAdmin = jsonObject.getJSONObject("User").getBoolean("is_admin");
+                        userId = jsonObject.getJSONObject("User").getInt("id");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    SharedPrefManager.getInstance(getContext()).setIsAnon(false);
+                    SharedPrefManager.getInstance(getContext()).setSavedId(userId);
+                    SharedPrefManager.getInstance(getContext()).setIsAdmin(isAdmin);
+                    if(isAdmin){
+                        startActivity(new Intent(getContext(), AdminPanelActivity.class).putExtra("id", userId));
+                    }else{
+                        startActivity(new Intent(getContext(), MainActivity.class).putExtra("id", userId));
+                    }
+
+                }
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {

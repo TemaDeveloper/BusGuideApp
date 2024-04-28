@@ -1,5 +1,6 @@
 package com.bus_tours_ex.apps.bustours.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -9,7 +10,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bus_tours_ex.apps.bustours.MainActivity;
 import com.bus_tours_ex.apps.bustours.R;
+import com.bus_tours_ex.apps.bustours.admin.AdminPanelActivity;
+import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
 import com.google.android.material.tabs.TabLayout;
 
 public class AuthActivity extends AppCompatActivity {
@@ -25,6 +29,14 @@ public class AuthActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.loginSignUpViewPager);
 
         loadViewPager();
+
+        if(SharedPrefManager.getInstance(getApplicationContext()).getIsAnon() == false
+                && SharedPrefManager.getInstance(getApplicationContext()).getIsAdmin()==false){
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }if(SharedPrefManager.getInstance(getApplicationContext()).getIsAnon() == false
+                && SharedPrefManager.getInstance(getApplicationContext()).getIsAdmin()==true){
+            startActivity(new Intent(getApplicationContext(), AdminPanelActivity.class));
+        }
 
     }
 
