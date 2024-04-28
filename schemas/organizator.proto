@@ -40,6 +40,7 @@ message Review {
 }
 
 message User {
+	int32 id = 6;
 	string name = 1;
 	optional string avatar = 2;
 	string email = 3;
