@@ -172,6 +172,7 @@ pub async fn get(
 
     if let Ok(user) = q {
         let user = schemas::User {
+            id: user.id,
             name: user.name,
             email: user.email,
             is_admin: user.is_admin,
