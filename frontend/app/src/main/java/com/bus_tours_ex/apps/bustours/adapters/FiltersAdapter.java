@@ -1,6 +1,7 @@
 package com.bus_tours_ex.apps.bustours.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.models.FilterItem;
 import com.bus_tours_ex.apps.bustours.models.Trip;
-import com.bus_tours_ex.apps.bustours.ui.trips.UpdateTripCategory;
+import com.bus_tours_ex.apps.bustours.rest.APIClient;
+import com.bus_tours_ex.apps.bustours.rest.AllTripResponse;
+import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 
-public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterViewHolder>{
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterViewHolder> {
 
     private ArrayList<FilterItem> filterList;
     private Context context;
@@ -51,7 +58,7 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
         holder.filterName.setText(item.getFilterName());
         holder.filterImage.setImageResource(item.getImage());
 
-        switch(item.getFilterName()){
+        switch (item.getFilterName()) {
             case "New":
                 holder.filterImage.setImageDrawable(context.getResources().getDrawable(R.drawable.new_tours_img));
                 break;
@@ -66,9 +73,9 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
                 break;
         }
 
-        if(check){
+        if (check) {
             ArrayList<Trip> trips = new ArrayList<>();
-            requestAPI(position, "New", trips);
+            requestAPI("New", trips);
             check = false;
         }
 
@@ -79,16 +86,16 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
                 notifyDataSetChanged();
                 if (position == 0) {
                     ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI(position, "New", trips);
+                    requestAPI("New", trips);
                 } else if (position == 1) {
                     ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI(position, "Popular", trips);
-                }else if (position == 2) {
+                    requestAPI( "Popular", trips);
+                } else if (position == 2) {
                     ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI(position, "Europe", trips);
-                }else if (position == 3) {
+                    requestAPI( "Europe", trips);
+                } else if (position == 3) {
                     ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI(position, "For Students", trips);
+                    requestAPI( "For Students", trips);
                 }
             }
         });
@@ -113,14 +120,45 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
 
     }
 
-    private void requestAPI(int position, String category, ArrayList<Trip> trips) {
-        trips.add(new Trip("Trip to Paris", "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg", 100));
-        trips.add(new Trip("Trip to Paris", "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg", 100));
-        trips.add(new Trip("Trip to Paris", "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg", 100));
-        trips.add(new Trip("Trip to Paris", "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg", 100));
-        trips.add(new Trip("Trip to Paris", "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg", 100));
-        trips.add(new Trip("Trip to Paris", "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg", 100));
-        updateTripCategory.callBack(position, trips, category);
+    private void requestAPI(String category, ArrayList<Trip> trips) {
+        ApiInterface apiInterface = APIClient.getApiService();
+        Call<AllTripResponse> callIdTrips = apiInterface.getAllTrips();
+        callIdTrips.enqueue(new Callback<AllTripResponse>() {
+            @Override
+            public void onResponse(Call<AllTripResponse> call, Response<AllTripResponse> response) {
+
+                if (response.isSuccessful()) {
+                    for (Integer id : response.body().getIds()) {
+                        apiInterface
+                                .getTrip(id)
+                                .enqueue(new Callback<Trip>() {
+                                    @Override
+                                    public void onResponse(Call<Trip> call, Response<Trip> response) {
+                                        synchronized (trips) {
+                                            if (response.body().getCategory().equals(category)) {
+                                                trips.add(response.body());
+                                                updateTripCategory.callBack(trips, category);
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Trip> call, Throwable throwable) {
+
+                                    }
+                                });
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AllTripResponse> call, Throwable t) {
+                Log.d("FAIL_GETTING_U", t.getMessage());
+            }
+        });
+
     }
 
     @Override
@@ -132,6 +170,7 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
         private TextView filterName;
         private ImageView filterImage;
         private MaterialCardView categoryCard;
+
         public FilterViewHolder(@NonNull View itemView) {
             super(itemView);
 

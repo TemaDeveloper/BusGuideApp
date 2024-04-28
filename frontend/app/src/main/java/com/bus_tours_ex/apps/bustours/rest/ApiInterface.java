@@ -59,7 +59,7 @@ public interface ApiInterface {
     Call<Trip> getTrip(@Path("id") int id);
 
     @GET("trip/all")
-    Call<List<Trip>> getAllTrips();
+    Call<AllTripResponse> getAllTrips();
 
     @GET("trip/{id}/image")
     Call<ResponseBody> getTripImage(@Path("id") int id);

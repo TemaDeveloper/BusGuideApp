@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-    private static final String DATABASE_URL = "http://10.0.2.2:3000/";
+    public static final String DATABASE_URL = "http://10.0.2.2:3000/";
     public static Retrofit retrofit = null;
 
 

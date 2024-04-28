@@ -17,13 +17,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.adapters.FiltersAdapter;
 import com.bus_tours_ex.apps.bustours.adapters.MainAdapter;
+import com.bus_tours_ex.apps.bustours.adapters.UpdateTripCategory;
 import com.bus_tours_ex.apps.bustours.databinding.FragmentTripsBinding;
 import com.bus_tours_ex.apps.bustours.models.FilterItem;
 import com.bus_tours_ex.apps.bustours.models.Trip;
-import com.bus_tours_ex.apps.bustours.ui.trips.UpdateTripCategory;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 
 public class TripsFragment extends Fragment implements UpdateTripCategory {
 
@@ -57,7 +58,7 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
         mainRecyclerView.setHasFixedSize(true);
         mainRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        buildRecyclerView();
+        //fetchTrips();
 
         filtersAdapter = new FiltersAdapter(TripsFragment.this::callBack, filters, getContext());
         filtersRecyclerView.hasFixedSize();
@@ -71,6 +72,41 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
         return root;
     }
 
+//    private void fetchTrips(){
+//        ApiInterface apiInterface = APIClient.getApiService();
+//        Call<AllTripResponse> callIdTrips = apiInterface.getAllTrips();
+//        callIdTrips.enqueue(new Callback<AllTripResponse>() {
+//            @Override
+//            public void onResponse(Call<AllTripResponse> call, Response<AllTripResponse> response) {
+//                if (response.isSuccessful()) {
+//                    trips = new ArrayList<>();
+//                    for(int i = 0; i < response.body().getIds().size(); i++){
+//                        Call<Trip> callTrip = apiInterface.getTrip(response.body().getIds().get(i));
+//                        callTrip.enqueue(new Callback<Trip>() {
+//                            @Override
+//                            public void onResponse(Call<Trip> call, Response<Trip> response) {
+//                                trips.add(response.body());
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<Trip> call, Throwable throwable) {
+//
+//                            }
+//                        });
+//                    }
+//
+//
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<AllTripResponse> call, Throwable t) {
+//                Log.d("FAIL_GETTING_U", t.getMessage());
+//            }
+//        });
+//    }
+
     // Method to get a random travel tip.
     public static String getRandomTravelTip(Context context) {
         Resources res = context.getResources();
@@ -80,38 +116,7 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
     }
 
     private void buildRecyclerView(){
-        trips = new ArrayList<>();
 
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
-        trips.add(new Trip("The Trip on Paris",
-                "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/03/1c/9c.jpg",
-                120));
     }
 
     private void init(View root){
@@ -129,8 +134,8 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
     }
 
     @Override
-    public void callBack(int position, ArrayList<Trip> foodList, String category) {
-        mainAdapter = new MainAdapter(foodList, getContext());
+    public void callBack(ArrayList<Trip> tripList, String category) {
+        mainAdapter = new MainAdapter(tripList, getContext());
         mainAdapter.notifyDataSetChanged();
         mainRecyclerView.setAdapter(mainAdapter);
         categoryName.setText(category);

@@ -7,6 +7,10 @@ public class Trip {
 
     //image, title, price, category, pick_up_points
     //avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag, viber_number, trip_id
+
+    @SerializedName("trip_id")
+    @Expose
+    private int tripId;
     @SerializedName("title")
     @Expose
     private String title;
@@ -54,6 +58,26 @@ public class Trip {
         this.title = title;
         this.image = image;
         this.price = price;
+    }
+
+    public int getTripId() {
+        return tripId;
+    }
+
+    public String getPlan() {
+        return plan;
+    }
+
+    public String[] getPickUp() {
+        return pickUp;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public Reviews[] getReviews() {
+        return reviews;
     }
 
     public String getTitle() {

@@ -20,12 +20,9 @@ pub async fn create(
 ) -> impl IntoResponse {
     let req = utils::multipart_to_map(&mut req).await;
     let null_bytes = Bytes::default();
-
-    tracing::info!("Json: {}", String::from_utf8(req.get("info").unwrap().to_vec()).unwrap());
     let body: schemas::Trip = serde_json::from_slice(req.get("info").unwrap()).unwrap();
     let trip_picture = req.get("trip_picture").unwrap_or(&null_bytes);
     let organizator_avatar = req.get("organizator_avatar").unwrap_or(&null_bytes);
-    tracing::info!("trip_pic.len()={}| org_ava={}", trip_picture.len(), organizator_avatar.len());
 
     let pick_up_points = Some(
         body.pick_up_points
@@ -127,7 +124,7 @@ pub async fn get(
             category: trip.category,
             plan: trip.plan,
             price: trip.price,
-            image: Some(format!("http://127.0.0.1:3000/trip/{trip_id}/image")),
+            image: Some(format!("trip/{trip_id}/image")),
             pick_up_points: trip.pick_up_points,
             organizator: organizator.ok().map(|o| schemas::Organizator {
                 email: o.email,
@@ -138,7 +135,7 @@ pub async fn get(
                 tg_tag: o.tg_tag,
                 viber_number: o.viber_number,
                 whatsapp_number: o.whatsapp_number,
-                avatar_img: Some(format!("http://127.0.0.1:3000/organizator/{}/avatar", o.id)),
+                avatar_img: Some(format!("organizator/{}/avatar", o.id)),
             }),
 
             reviews: reviews
@@ -163,6 +160,8 @@ pub async fn get_image(
         .unwrap()
         .image
         .unwrap_or_default();
+
+    tracing::info!("Requesting image for Id({})", trip_id);
 
     if let Some(format) = utils::bytes_to_img_format(&img_bytes) {
         let chunks = img_bytes

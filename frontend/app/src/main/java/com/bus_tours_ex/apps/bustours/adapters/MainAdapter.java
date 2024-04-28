@@ -15,6 +15,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.models.FilterItem;
 import com.bus_tours_ex.apps.bustours.models.Trip;
+import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.ui.trips.TripDetailsActivity;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +43,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         Trip item = tripList.get(position);
         holder.tripTitle.setText(item.getTitle());
         holder.tripPrice.setText(item.getPrice() + " USD");
-        Picasso.get().load(item.getImage()).into(holder.tripImage);
+
+        if (holder.tripImage == null) {
+            System.out.println("Trip image holder is null");
+        }
+        Picasso.get()
+                .load(APIClient.DATABASE_URL + item.getImage())
+                .into(holder.tripImage);
     }
 
     @Override
