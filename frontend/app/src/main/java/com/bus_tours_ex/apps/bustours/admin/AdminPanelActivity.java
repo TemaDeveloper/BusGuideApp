@@ -23,6 +23,7 @@ import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
 import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
 import com.bus_tours_ex.apps.bustours.models.Organizator;
+import com.bus_tours_ex.apps.bustours.models.Reviews;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
@@ -41,6 +42,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -106,21 +108,15 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
 
         // Convert trip and organizer data to JSON
         Gson gson = new Gson();
-        String json = gson.toJson(new Trip(title, price, plan, pickUp, chosenCategory, new Organizator(nameM, "", "", emailM, watsAppM, telegramM, viberM)));
+        String json = gson.toJson(new Trip(title, price, plan, new String[] {pickUp}, chosenCategory, new Organizator(nameM, "", "", emailM, watsAppM, telegramM, viberM), new Reviews[]{}));
         RequestBody info = RequestBody.create(MediaType.parse("application/json"), json);
 
-        // Create RequestBody instances from byte arrays
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), tourImageBytes);
-        MultipartBody.Part tripPicture = MultipartBody.Part.createFormData("image", "tripPicture.png", requestFile);
-
-        RequestBody avatarRequestFile = RequestBody.create(MediaType.parse("image/png"), managerImageBytes);
-        MultipartBody.Part organizatorAvatar = MultipartBody.Part.createFormData("avatar_img", "avatar.png", avatarRequestFile);
-
-        // Send the multipart request with Retrofit
-        Call<Trip> call = APIClient.getApiService().createTrip(info, tripPicture, organizatorAvatar);
-        call.enqueue(new Callback<Trip>() {
+        // Send the multipart request with Retrofi't
+        Call<ResponseBody> call = APIClient.getApiService().createTrip(info, toMultipartBodyPart("trip_picture", tourImageBytes, "trip_picture"),
+                toMultipartBodyPart("organizator_avatar", managerImageBytes, "organizator_avatar"));
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Trip> call, retrofit2.Response<Trip> response) {
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     // Handle success
                     Log.d("TripCreation", "Trip created successfully with ID: " + response.body().toString());
@@ -130,11 +126,17 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
             }
 
             @Override
-            public void onFailure(Call<Trip> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("TripCreation", "Error calling API", t);
             }
         });
 
+    }
+
+    public static MultipartBody.Part toMultipartBodyPart(String partName, byte[] byteArray, String fileName) {
+        // Create a RequestBody from the byte array
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), byteArray);
+        return MultipartBody.Part.createFormData(partName, fileName, requestBody);
     }
 
     public byte[] getBytes(InputStream inputStream) throws IOException {

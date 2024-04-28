@@ -21,7 +21,7 @@ public class Trip {
     private String plan;
     @SerializedName("pick_up_points")
     @Expose
-    private String pickUp;
+    private String[] pickUp;
     @SerializedName("category")
     @Expose
     private String category;
@@ -29,16 +29,19 @@ public class Trip {
     @SerializedName("organizator")
     @Expose
     private Organizator organizator;
+    @SerializedName("reviews")
+    @Expose
+    private Reviews[] reviews;
 
-    public Trip(String title, int price, String plan, String pickUp, String category, Organizator organizator) {
+    public Trip(String title, int price, String plan, String[] pickUp, String category, Organizator organizator, Reviews[] reviews) {
         this.title = title;
         this.price = price;
         this.plan = plan;
         this.pickUp = pickUp;
         this.category = category;
         this.organizator = organizator;
+        this.reviews = reviews;
     }
-
     public Organizator getOrganizator() {
         return organizator;
     }

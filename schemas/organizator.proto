@@ -17,18 +17,14 @@ message Organizator {
 
 message Trip {
 	string title = 1;
-	string image = 2;
+	optional string image = 2;
 	int32  price			= 3;
 	string plan				= 5;
 	string category			= 7;
 
 	Organizator organizator = 6;
 	repeated Review reviews = 8;
-	repeated PickUpPoint pick_up_points = 9;
-}
-
-message PickUpPoint {
-	string description = 3;
+	repeated string pick_up_points = 9;
 }
 
 message Review {

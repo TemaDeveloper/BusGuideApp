@@ -10,7 +10,10 @@ use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
 use crate::{constants, review, utils};
-
+/*
+Json: {"category":"New","organizator":{"email":"lakj","last_name":"","name":"lakjd","regular_number":"","tg_tag":"","viber_number":"","whatsapp_number":""},"pick_up_points":["alkdj"],"plan":"asdkjfglk","price":1123,"title":"sdfg"}
+thread 'tokio-runtime-worker' panicked at src/trip.rs:22:80:
+ */
 pub async fn create(
     Extension(db_conn): Extension<sqlx::PgPool>,
     mut req: Multipart,
@@ -18,15 +21,14 @@ pub async fn create(
     let req = utils::multipart_to_map(&mut req).await;
     let null_bytes = Bytes::default();
 
+    tracing::info!("Json: {}", String::from_utf8(req.get("info").unwrap().to_vec()).unwrap());
     let body: schemas::Trip = serde_json::from_slice(req.get("info").unwrap()).unwrap();
     let trip_picture = req.get("trip_picture").unwrap_or(&null_bytes);
     let organizator_avatar = req.get("organizator_avatar").unwrap_or(&null_bytes);
+    tracing::info!("trip_pic.len()={}| org_ava={}", trip_picture.len(), organizator_avatar.len());
 
     let pick_up_points = Some(
         body.pick_up_points
-            .into_iter()
-            .map(|p| p.description)
-            .collect::<Vec<String>>(),
     );
 
     let trip_record = sqlx::query!(
@@ -66,7 +68,7 @@ pub async fn create(
         .await;
     }
 
-    (StatusCode::OK, format!("Id of trip: {}", trip_record.id))
+    (StatusCode::OK, format!("\"user_id\": \"{}\"", trip_record.id))
 }
 
 async fn create_organizator(
@@ -125,16 +127,8 @@ pub async fn get(
             category: trip.category,
             plan: trip.plan,
             price: trip.price,
-            image: format!("http://127.0.0.1:3000/trip/{trip_id}/image"),
-
-            pick_up_points: trip
-                .pick_up_points
-                .iter()
-                .map(|description| schemas::PickUpPoint {
-                    description: description.clone(),
-                })
-                .collect(),
-
+            image: Some(format!("http://127.0.0.1:3000/trip/{trip_id}/image")),
+            pick_up_points: trip.pick_up_points,
             organizator: organizator.ok().map(|o| schemas::Organizator {
                 email: o.email,
                 name: o.name,
