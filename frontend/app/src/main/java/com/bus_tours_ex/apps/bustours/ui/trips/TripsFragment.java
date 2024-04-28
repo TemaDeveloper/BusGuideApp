@@ -32,7 +32,6 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
     private FragmentTripsBinding binding;
     private RecyclerView filtersRecyclerView, mainRecyclerView;
     private ArrayList<FilterItem> filters;
-    private ArrayList<Trip> trips;
     private FiltersAdapter filtersAdapter;
     private MainAdapter mainAdapter;
 
@@ -56,12 +55,12 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
                 R.drawable.students_tour_img));
 
         mainRecyclerView.setHasFixedSize(true);
+        filtersRecyclerView.setHasFixedSize(true);
         mainRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         //fetchTrips();
 
         filtersAdapter = new FiltersAdapter(TripsFragment.this::callBack, filters, getContext());
-        filtersRecyclerView.hasFixedSize();
         filtersRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false
                 ));
@@ -72,40 +71,7 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
         return root;
     }
 
-//    private void fetchTrips(){
-//        ApiInterface apiInterface = APIClient.getApiService();
-//        Call<AllTripResponse> callIdTrips = apiInterface.getAllTrips();
-//        callIdTrips.enqueue(new Callback<AllTripResponse>() {
-//            @Override
-//            public void onResponse(Call<AllTripResponse> call, Response<AllTripResponse> response) {
-//                if (response.isSuccessful()) {
-//                    trips = new ArrayList<>();
-//                    for(int i = 0; i < response.body().getIds().size(); i++){
-//                        Call<Trip> callTrip = apiInterface.getTrip(response.body().getIds().get(i));
-//                        callTrip.enqueue(new Callback<Trip>() {
-//                            @Override
-//                            public void onResponse(Call<Trip> call, Response<Trip> response) {
-//                                trips.add(response.body());
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<Trip> call, Throwable throwable) {
-//
-//                            }
-//                        });
-//                    }
-//
-//
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<AllTripResponse> call, Throwable t) {
-//                Log.d("FAIL_GETTING_U", t.getMessage());
-//            }
-//        });
-//    }
+
 
     // Method to get a random travel tip.
     public static String getRandomTravelTip(Context context) {
@@ -115,9 +81,6 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
         return tips[randomIndex];
     }
 
-    private void buildRecyclerView(){
-
-    }
 
     private void init(View root){
         filtersRecyclerView = root.findViewById(R.id.filters_recyclerview);
@@ -134,10 +97,11 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
     }
 
     @Override
-    public void callBack(ArrayList<Trip> tripList, String category) {
+    public void callBack(int position, ArrayList<Trip> tripList, String category) {
         mainAdapter = new MainAdapter(tripList, getContext());
         mainAdapter.notifyDataSetChanged();
         mainRecyclerView.setAdapter(mainAdapter);
         categoryName.setText(category);
+        System.out.println(category + " ====== > Cat");
     }
 }

@@ -24,11 +24,21 @@
         app:boxCornerRadiusTopStart="4dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailEditText"
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search..."
             android:inputType="textEmailAddress" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/search_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        />
+
 </LinearLayout>

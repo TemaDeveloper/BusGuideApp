@@ -79,15 +79,15 @@ public class ProfileFragment extends Fragment {
         cardLogin = root.findViewById(R.id.cardLogin);
         logOutButton = root.findViewById(R.id.log_out_button);
 
-        trips = new ArrayList<>();
-        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
-        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
-        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
-
-        adapterMyReservations = new MainAdapter(trips, getContext());
-        myReservationsRecyclerView.setHasFixedSize(true);
-        myReservationsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        myReservationsRecyclerView.setAdapter(adapterMyReservations);
+//        trips = new ArrayList<>();
+//        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
+//        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
+//        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
+//
+//        adapterMyReservations = new MainAdapter(trips, getContext());
+//        myReservationsRecyclerView.setHasFixedSize(true);
+//        myReservationsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+//        myReservationsRecyclerView.setAdapter(adapterMyReservations);
 
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override

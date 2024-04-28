@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.models.FilterItem;
+import com.bus_tours_ex.apps.bustours.models.Organizator;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.ui.trips.TripDetailsActivity;
@@ -25,6 +26,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
     private ArrayList<Trip> tripList;
     private Context context;
+    private String imageIntent, pickUp, plan, nameManager, telegram, viber, whatsapp, imageManagerIntent;
 
     public MainAdapter(ArrayList<Trip> tripList, Context context) {
         this.tripList = tripList;
@@ -47,8 +49,20 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         if (holder.tripImage == null) {
             System.out.println("Trip image holder is null");
         }
+        imageIntent = APIClient.DATABASE_URL + item.getImage();
+        for(String pickUpPlace : item.getPickUp()){
+            pickUp = pickUpPlace;
+        }
+        plan = item.getPlan();
+        Organizator organizator = item.getOrganizator();
+        nameManager = organizator.getName();
+        telegram = organizator.getTgTag();
+        viber = organizator.getViberNumber();
+        whatsapp = organizator.getWhatsappNumber();
+        imageManagerIntent = APIClient.DATABASE_URL + organizator.getAvatarImg();
+
         Picasso.get()
-                .load(APIClient.DATABASE_URL + item.getImage())
+                .load(imageIntent)
                 .into(holder.tripImage);
     }
 
@@ -57,15 +71,17 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         return tripList.size();
     }
 
+    public void filterList(ArrayList<Trip> filterlist) {
+        tripList = filterlist;
+        notifyDataSetChanged();
+    }
+
     public class MainViewHolder extends RecyclerView.ViewHolder {
         private TextView tripTitle, tripPrice;
         private ImageView tripImage;
-        private LottieAnimationView likeTripAnimation;
-        private boolean isChecked = false;
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            likeTripAnimation = itemView.findViewById(R.id.likeLottieAnimation);
             tripPrice = itemView.findViewById(R.id.price_trip_text_view);
             tripTitle = itemView.findViewById(R.id.name_trip_text_view);
             tripImage = itemView.findViewById(R.id.image_trip);
@@ -76,24 +92,17 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                     context.startActivity(new Intent(context, TripDetailsActivity.class)
                             .putExtra("titleTrip", tripTitle.getText().toString())
                             .putExtra("priceTrip", tripPrice.getText().toString())
-                            .putExtra("imageTrip", tripList.get(getAdapterPosition()).getImage()));
+                            .putExtra("imageTrip", imageIntent)
+                            .putExtra("plan", plan)
+                            .putExtra("pickUp", pickUp)
+                            .putExtra("nameManager", nameManager)
+                            .putExtra("telegram", telegram)
+                            .putExtra("viber", viber)
+                            .putExtra("whatsapp", whatsapp)
+                            .putExtra("managerImage", imageManagerIntent));
                 }
             });
 
-            likeTripAnimation.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(isChecked){
-                        likeTripAnimation.setSpeed(-1);
-                        likeTripAnimation.playAnimation();
-                        isChecked = false;
-                    }else{
-                        likeTripAnimation.setSpeed(1);
-                        likeTripAnimation.playAnimation();
-                        isChecked = true;
-                    }
-                }
-            });
 
         }
     }

@@ -37,6 +37,10 @@ public class Organizator {
         @Expose
         private String tripId;
 
+    @SerializedName("avatar_img")
+    @Expose
+    private String avatarImg;
+
         public Organizator(String name, String lastName, String regularNumber,
                            String email, String whatsappNumber, String tgTag, String viberNumber) {
             this.name = name;
@@ -51,7 +55,11 @@ public class Organizator {
         // Getters
 
 
-        public String getName() {
+    public String getAvatarImg() {
+        return avatarImg;
+    }
+
+    public String getName() {
             return name;
         }
 

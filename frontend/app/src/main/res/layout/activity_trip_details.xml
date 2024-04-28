@@ -201,6 +201,7 @@
                             >
 
                             <ImageView
+                                android:id="@+id/image_profile_manager"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
@@ -211,6 +212,7 @@
 
 
                         <TextView
+                            android:id="@+id/manager_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Name"
@@ -247,6 +249,7 @@
 
 
                         <TextView
+                            android:id="@+id/text_telegram_manager"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -275,6 +278,7 @@
 
 
                         <TextView
+                            android:id="@+id/text_whatsapp_manager"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -303,6 +307,7 @@
 
 
                         <TextView
+                            android:id="@+id/text_viber_manager"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
