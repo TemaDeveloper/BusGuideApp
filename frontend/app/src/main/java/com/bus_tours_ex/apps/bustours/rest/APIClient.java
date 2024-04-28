@@ -1,7 +1,10 @@
 package com.bus_tours_ex.apps.bustours.rest;
 
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -10,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-    private static final String DATABASE_URL = "http://127.0.0.1/";
+    private static final String DATABASE_URL = "http://10.0.2.2:3000/";
     public static Retrofit retrofit = null;
 
 
@@ -20,6 +23,7 @@ public class APIClient {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
+                .connectTimeout(60, TimeUnit.SECONDS)
                 .build();
 
         if(retrofit == null) {

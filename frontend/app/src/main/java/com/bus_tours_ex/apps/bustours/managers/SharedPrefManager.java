@@ -7,9 +7,9 @@ public class SharedPrefManager {
 
     private static final String PREF_NAME = "MyAppPreferences";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_ID = "id";
     private static final String KEY_IS_ADMIN = "isAdmin";
     private static final String KEY_IS_ANON = "isAnon";
-
     private static SharedPrefManager instance;
     private final SharedPreferences prefs;
 
@@ -22,6 +22,11 @@ public class SharedPrefManager {
             instance = new SharedPrefManager(context);
         }
         return instance;
+    }
+
+    public void setSavedId(int id){prefs.edit().putInt(KEY_ID, id).apply();}
+    public int getSavedId(){
+        return prefs.getInt(KEY_ID, -1);
     }
 
     public void setEmail(String email) {
