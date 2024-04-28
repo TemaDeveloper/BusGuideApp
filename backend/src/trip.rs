@@ -32,9 +32,9 @@ pub async fn create(
     let trip_record = sqlx::query!(
         r#"
             INSERT INTO trips 
-                (image, title, price, category, pick_up_points)
+                (image, title, price, category, pick_up_points, plan)
             VALUES
-                ($1, $2, $3, $4, $5)
+                ($1, $2, $3, $4, $5, $6)
             RETURNING
                 id
         "#,
@@ -42,7 +42,8 @@ pub async fn create(
         body.title,
         body.price,
         body.category,
-        pick_up_points.as_deref()
+        pick_up_points.as_deref(),
+        body.plan,
     )
     .fetch_one(&db_conn)
     .await
