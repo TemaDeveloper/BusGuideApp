@@ -18,19 +18,18 @@ pub async fn register(
     mut req: Multipart,
 ) -> impl IntoResponse {
     let req = utils::multipart_to_map(&mut req).await;
-    let avatar = req.get("avatar")
-        .map_or(
-            constants::DEFUALT_AVATAR_BYTES.to_vec(), 
-            |a| if utils::bytes_to_img_format(a).is_some() {
+    let avatar = req
+        .get("avatar")
+        .map_or(constants::DEFUALT_AVATAR_BYTES.to_vec(), |a| {
+            if utils::bytes_to_img_format(a).is_some() {
                 a.to_vec()
             } else {
                 constants::DEFUALT_AVATAR_BYTES.to_vec()
             }
-    );
+        });
     let req: schemas::User = serde_json::from_slice(&req.get("info").unwrap()).unwrap();
 
-    if avatar.len() >= constants::AVATAR_SIZE_LIMIT
-    {
+    if avatar.len() >= constants::AVATAR_SIZE_LIMIT {
         return (
             StatusCode::EXPECTATION_FAILED,
             "Invalid image or exceeded size".into(),
@@ -117,7 +116,6 @@ pub async fn get_avatar(
         .avatar
         .unwrap_or(constants::DEFUALT_AVATAR_BYTES.to_vec());
 
-
     if let Some(format) = utils::bytes_to_img_format(&avatar_bytes) {
         let chunks = avatar_bytes
             .chunks(constants::IMG_CHUNK_SIZE)
@@ -186,5 +184,56 @@ pub async fn get(
             StatusCode::NOT_FOUND,
             Json(GetResponse::Error("Invalid password Id".into())),
         )
+    }
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct ReserveReqBody {
+    pub user_id: i32,
+    pub trip_id: i32,
+}
+
+pub async fn reserve(
+    Extension(db_conn): Extension<sqlx::PgPool>,
+    Json(req): Json<ReserveReqBody>,
+) -> impl IntoResponse {
+    let res = sqlx::query!(
+        "INSERT INTO reservations (user_id, trip_id) VALUES ($1, $2)",
+        req.user_id,
+        req.trip_id
+    )
+    .fetch_one(&db_conn)
+    .await;
+
+    match res {
+        Ok(_) => (StatusCode::OK, ""),
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, ""),
+    }
+}
+
+#[derive(Deserialize, Serialize, Default)]
+pub struct ReservationsResponse {
+    trip_ids: Vec<i32>,
+}
+
+pub async fn get_reservations(
+    extract::Path(user_id): extract::Path<i32>,
+    Extension(db_conn): Extension<sqlx::PgPool>,
+) -> (StatusCode, Json<ReservationsResponse>) {
+    let q = sqlx::query!(
+        "SELECT (trip_id) FROM reservations WHERE user_id = $1",
+        user_id
+    )
+    .fetch_all(&db_conn)
+    .await;
+
+    match q {
+        Ok(res) => (
+            StatusCode::OK,
+            Json(ReservationsResponse {
+                trip_ids: res.iter().map(|r| r.trip_id).collect(),
+            }),
+        ),
+        Err(_) => (StatusCode::NOT_FOUND, Json::default()),
     }
 }

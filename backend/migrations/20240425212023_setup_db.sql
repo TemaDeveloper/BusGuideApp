@@ -20,6 +20,16 @@ CREATE TABLE trips (
     pick_up_points TEXT[] NOT NULL
 );
 
+CREATE TABLE reservations (
+    id SERIAL PRIMARY KEY,
+
+    user_id INT NOT NULL, 
+    FOREIGN KEY (user_id) REFERENCES users(id),
+
+    trip_id INT NOT NULL,
+    FOREIGN KEY (trip_id) REFERENCES trips(id)
+);
+
 CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
     rating INT NOT NULL,
