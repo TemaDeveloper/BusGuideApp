@@ -68,7 +68,7 @@ public class SignupFragment extends Fragment {
         String password = passwordEditText.getText().toString();
 
         Gson gson = new Gson();
-        String json = gson.toJson(new User(email, name, password, false));
+        String json = gson.toJson(new User(name, email, password, false));
         RequestBody userInfo = RequestBody.create(MediaType.parse("application/json"), json);
 
         Call<ResponseBody> callRegister = apiInterface.registerUser(userInfo, null);
@@ -87,6 +87,7 @@ public class SignupFragment extends Fragment {
                     System.out.println(jsonString);
                     int id = Integer.parseInt(jsonString);
                     SharedPrefManager.getInstance(getContext()).setSavedId(id);
+                    SharedPrefManager.getInstance(getContext()).setIsAnon(false);
                     startActivity(new Intent(getContext(), MainActivity.class).putExtra("id", id));
                 }
             }

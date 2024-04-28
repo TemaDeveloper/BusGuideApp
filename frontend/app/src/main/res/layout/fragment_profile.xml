@@ -60,9 +60,19 @@
                     android:layout_marginTop="6dp"
                     android:text="email"
                     android:textColor="@color/black"
-                    android:layout_marginBottom="20dp"
                     android:textAllCaps="false"
                     android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/log_out_button"
+                    android:text="@string/log_out"
+                    android:textAllCaps="false"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    />
+
             </LinearLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

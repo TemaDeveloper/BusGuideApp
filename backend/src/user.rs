@@ -54,7 +54,7 @@ pub async fn register(
     .await
     .unwrap();
 
-    (StatusCode::CREATED, format!("User id: {}", res.id))
+    (StatusCode::CREATED, format!("{}", res.id))
 }
 
 /// Atleast one of email or name should be Some

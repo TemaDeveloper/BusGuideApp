@@ -21,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
+import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
+import com.bus_tours_ex.apps.bustours.models.Organizator;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
@@ -29,8 +31,10 @@ import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -47,14 +51,18 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
     private final int REQUEST_CODE_TOUR_PHOTO = 200;
     private String TAG = "IMAGE_CHOOSER_E";
     private ImageView tourImage;
-    private MaterialButton allReservationsButton;
-    private EditText tripTitle, tripPlan, tripPrice, tripPickUp;
+    private MaterialButton allReservationsButton, createTripButton;
+    private EditText tripTitle, tripPlan, tripPrice, tripPickUp, managerName, managerEmail, managerTeleg, managerViber, managerWatsApp;
     private Spinner categoriesSpinner;
     private String[] categories;
     private String chosenCategory;
     private InputStream iStream;
     private final int REQUEST_CODE_MANAGER_PHOTO = 201;
     private CircleImageView photoManager;
+
+    private byte[] tourImageBytes;
+    private byte[] managerImageBytes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +76,15 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         allReservationsButton.setOnClickListener(this::onClick);
         logoutText.setOnClickListener(this::onClick);
         photoManager.setOnClickListener(this::onClick);
+        createTripButton.setOnClickListener(this::onClick);
 
     }
 
-    private void createSpinner(){
+    private void createSpinner() {
         //Getting the instance of Spinner and applying OnItemSelectedListener on it
         categoriesSpinner.setOnItemSelectedListener(this);
         //Creating the ArrayAdapter instance having the country list
-        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter aa = new ArrayAdapter(this, android.R.layout.simple_spinner_item, categories);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         categoriesSpinner.setAdapter(aa);
@@ -89,22 +98,26 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         String pickUp = tripPickUp.getText().toString();
         String plan = tripPlan.getText().toString();
 
+        String emailM = managerEmail.getText().toString();
+        String nameM = managerName.getText().toString();
+        String telegramM = managerTeleg.getText().toString();
+        String viberM = managerViber.getText().toString();
+        String watsAppM = managerWatsApp.getText().toString();
+
+        // Convert trip and organizer data to JSON
         Gson gson = new Gson();
-        String json = gson.toJson(new Trip(title, price, plan, pickUp, chosenCategory));
+        String json = gson.toJson(new Trip(title, price, plan, pickUp, chosenCategory, new Organizator(nameM, "", "", emailM, watsAppM, telegramM, viberM)));
         RequestBody info = RequestBody.create(MediaType.parse("application/json"), json);
 
-        byte[] inputData = getBytes(iStream);
+        // Create RequestBody instances from byte arrays
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), tourImageBytes);
+        MultipartBody.Part tripPicture = MultipartBody.Part.createFormData("image", "tripPicture.png", requestFile);
 
-        File tripPictureFile = new File(Arrays.toString(inputData));
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/png"), tripPictureFile);
-        MultipartBody.Part tripPicture = MultipartBody.Part.createFormData("image", tripPictureFile.getName(), requestFile);
+        RequestBody avatarRequestFile = RequestBody.create(MediaType.parse("image/png"), managerImageBytes);
+        MultipartBody.Part organizatorAvatar = MultipartBody.Part.createFormData("avatar_img", "avatar.png", avatarRequestFile);
 
-        File avatarFile = new File(Arrays.toString(inputData));
-        RequestBody avatarRequestFile = RequestBody.create(MediaType.parse("image/png"), avatarFile);
-        MultipartBody.Part organizatorAvatar = MultipartBody.Part.createFormData("avatar_img", avatarFile.getName(), avatarRequestFile);
-
+        // Send the multipart request with Retrofit
         Call<Trip> call = APIClient.getApiService().createTrip(info, tripPicture, organizatorAvatar);
-
         call.enqueue(new Callback<Trip>() {
             @Override
             public void onResponse(Call<Trip> call, retrofit2.Response<Trip> response) {
@@ -136,7 +149,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         return byteBuffer.toByteArray();
     }
 
-    private void init(){
+    private void init() {
 
         categories = getResources().getStringArray(R.array.categories);
 
@@ -146,6 +159,13 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         tripPickUp = findViewById(R.id.tour_pick_up_admin);
         categoriesSpinner = findViewById(R.id.spinner_categories);
         photoManager = findViewById(R.id.photo_manager);
+        createTripButton = findViewById(R.id.create_trip_button);
+
+        managerName = findViewById(R.id.manager_name_admin);
+        managerEmail = findViewById(R.id.manager_email_admin);
+        managerTeleg = findViewById(R.id.telegram_nickname_manager);
+        managerViber = findViewById(R.id.viber_manager);
+        managerWatsApp = findViewById(R.id.watsapp_manager);
 
         createAdmin = findViewById(R.id.create_admin_text);
         tourPhoto = findViewById(R.id.upload_image_text_view);
@@ -156,7 +176,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    private void goToGallery(int request){
+    private void goToGallery(int request) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -165,41 +185,47 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                Uri selectedImageUri = data.getData();
-                iStream = getContentResolver().openInputStream(selectedImageUri);
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            if (selectedImageUri == null) return;
 
-                if (selectedImageUri == null) return;
+            try {
+                InputStream stream = getContentResolver().openInputStream(selectedImageUri);
+                byte[] bytes = getBytes(stream);  // Ensure this method closes the InputStream
 
-                if(REQUEST_CODE_TOUR_PHOTO == requestCode){
+                if (requestCode == REQUEST_CODE_TOUR_PHOTO) {
                     tourImage.setImageURI(selectedImageUri);
                     tourPhoto.setText("Change Tour Photo");
-                }else if(REQUEST_CODE_MANAGER_PHOTO == requestCode){
+                    tourImageBytes = bytes;  // Save the byte array
+                } else if (requestCode == REQUEST_CODE_MANAGER_PHOTO) {
                     photoManager.setImageURI(selectedImageUri);
+                    managerImageBytes = bytes;  // Save the byte array
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                Log.e(TAG, "Selecting picture cancelled");
+            } catch (IOException e) {
+                Log.e(TAG, "Error processing image input: " + e.getMessage());
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in onActivityResult : " + e.getMessage());
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.e(TAG, "Selecting picture cancelled");
         }
     }
+
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.create_admin_text) {
             startActivity(new Intent(getApplicationContext(), AdminCreationActivity.class));
-        }else if (id == R.id.photo_manager) {
+        } else if (id == R.id.photo_manager) {
             goToGallery(REQUEST_CODE_MANAGER_PHOTO);
-        }else if (id == R.id.upload_image_text_view) {
+        } else if (id == R.id.upload_image_text_view) {
             goToGallery(REQUEST_CODE_TOUR_PHOTO);
-        }else if (id == R.id.all_reservations_button) {
+        } else if (id == R.id.all_reservations_button) {
             startActivity(new Intent(getApplicationContext(), AllReservationsActivity.class));
-        }else if (id == R.id.log_out_button) {
+        } else if (id == R.id.log_out_button) {
+            SharedPrefManager.getInstance(getApplicationContext()).setIsAnon(true);
+            SharedPrefManager.getInstance(getApplicationContext()).setIsAdmin(false);
             startActivity(new Intent(getApplicationContext(), AuthActivity.class));
-        }else if (id == R.id.create_trip_button) {
+        } else if (id == R.id.create_trip_button) {
             try {
                 create();
             } catch (IOException e) {

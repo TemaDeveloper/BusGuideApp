@@ -31,9 +31,6 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
-    public User() {
-    }
-
     public int getId() {
         return id;
     }
