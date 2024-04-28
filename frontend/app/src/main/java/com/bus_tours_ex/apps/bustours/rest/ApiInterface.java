@@ -54,7 +54,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("trip")
-    Call<Trip> createTrip(@Part("info") RequestBody tripInfo, @Part MultipartBody.Part image, @Part MultipartBody.Part avatar);
+    Call<Trip> createTrip(@Part("info") RequestBody tripInfo, @Part("trip_picture") MultipartBody.Part image, @Part("organizator_avatar") MultipartBody.Part avatar);
 
     @GET("trip/{id}")
     Call<Trip> getTrip(@Path("id") int id);
