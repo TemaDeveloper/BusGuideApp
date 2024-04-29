@@ -23,7 +23,9 @@ import com.bus_tours_ex.apps.bustours.adapters.MainAdapter;
 import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
 import com.bus_tours_ex.apps.bustours.databinding.FragmentProfileBinding;
 import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
+import com.bus_tours_ex.apps.bustours.models.Organizator;
 import com.bus_tours_ex.apps.bustours.models.ResponseWrapper;
+import com.bus_tours_ex.apps.bustours.models.Reviews;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.models.User;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
@@ -38,11 +40,14 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -58,11 +63,12 @@ public class ProfileFragment extends Fragment {
     private RecyclerView myReservationsRecyclerView;
     private ArrayList<Trip> trips;
     private MainAdapter adapterMyReservations;
-    private TextView nameText, emailText;
+    private TextView nameText, emailText, updateAvatarImage;
     private LinearLayout linReservations;
     private CircleImageView avatarImageView;
     private final int REQUEST_CODE_AVATAR_PHOTO = 200;
     private String TAG = "IMAGE_CHOOSER_E";
+    private byte[] avatarBytes;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -78,16 +84,15 @@ public class ProfileFragment extends Fragment {
         emailText = root.findViewById(R.id.emailText);
         cardLogin = root.findViewById(R.id.cardLogin);
         logOutButton = root.findViewById(R.id.log_out_button);
+        updateAvatarImage = root.findViewById(R.id.update_avatar_image);
 
-        trips = new ArrayList<>();
-        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
-        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
-        trips.add(new Trip("Trip to China", "https://media.cnn.com/api/v1/images/stellar/prod/230529151056-aerial-wuhan-china.jpg?c=original", 80));
-
-        adapterMyReservations = new MainAdapter(trips, getContext());
-        myReservationsRecyclerView.setHasFixedSize(true);
-        myReservationsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        myReservationsRecyclerView.setAdapter(adapterMyReservations);
+        updateAvatarImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateImage();
+                updateAvatarImage.setVisibility(View.GONE);
+            }
+        });
 
         logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +127,45 @@ public class ProfileFragment extends Fragment {
 
 
         return root;
+    }
+
+    private void updateImage(){
+        // Convert trip and organizer data to JSON
+        int ID = SharedPrefManager.getInstance(getContext()).getSavedId();
+        Call<ResponseBody> call = APIClient.getApiService().updateUserAvatar(ID, toMultipartBodyPart("avatar", avatarBytes, "avatar"));
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    // Handle success
+                    Log.d("TripCreation", "Trip created successfully with ID: " + response.body().toString());
+                } else {
+                    Log.e("TripCreation", "Failed to create trip: " + response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("TripCreation", "Error calling API", t);
+            }
+        });
+    }
+
+    public static MultipartBody.Part toMultipartBodyPart(String partName, byte[] byteArray, String fileName) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/png"), byteArray);
+        return MultipartBody.Part.createFormData(partName, fileName, requestBody);
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
     }
 
     private void getUserData(){
@@ -165,11 +209,16 @@ public class ProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (resultCode == Activity.RESULT_OK && data != null) {
+
                 Uri selectedImageUri = data.getData();
+                InputStream stream = getContext().getContentResolver().openInputStream(selectedImageUri);
+                byte[] bytes = getBytes(stream);
                 if (selectedImageUri == null) return;
 
                 if(requestCode == REQUEST_CODE_AVATAR_PHOTO){
                     avatarImageView.setImageURI(selectedImageUri);
+                    avatarBytes = bytes;
+                    updateAvatarImage.setVisibility(View.VISIBLE);
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 Log.e(TAG, "Selecting picture cancelled");

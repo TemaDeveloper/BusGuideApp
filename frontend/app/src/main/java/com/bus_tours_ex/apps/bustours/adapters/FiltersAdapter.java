@@ -1,5 +1,6 @@
 package com.bus_tours_ex.apps.bustours.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,11 +41,6 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
         this.updateTripCategory = updateTripCategory;
     }
 
-    public FiltersAdapter(ArrayList<FilterItem> filterList, Context context) {
-        this.filterList = filterList;
-        this.context = context;
-    }
-
     @NonNull
     @Override
     public FiltersAdapter.FilterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -53,7 +49,7 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FiltersAdapter.FilterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FiltersAdapter.FilterViewHolder holder, @SuppressLint("RecyclerView") int position) {
         FilterItem item = filterList.get(position);
         holder.filterName.setText(item.getFilterName());
         holder.filterImage.setImageResource(item.getImage());
@@ -74,8 +70,8 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
         }
 
         if (check) {
-            ArrayList<Trip> trips = new ArrayList<>();
-            requestAPI("New", trips);
+            ArrayList<Trip> tripList = new ArrayList<>();
+            requestAPI(position,"New", tripList);
             check = false;
         }
 
@@ -84,19 +80,20 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
             public void onClick(View v) {
                 rowIndex = position;
                 notifyDataSetChanged();
-                if (position == 0) {
-                    ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI("New", trips);
-                } else if (position == 1) {
-                    ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI( "Popular", trips);
-                } else if (position == 2) {
-                    ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI( "Europe", trips);
-                } else if (position == 3) {
-                    ArrayList<Trip> trips = new ArrayList<>();
-                    requestAPI( "For Students", trips);
+                if(position == 0){
+                    ArrayList<Trip> tripList = new ArrayList<>();
+                    requestAPI(position, "New", tripList);
+                }else if(position == 1){
+                    ArrayList<Trip> tripList = new ArrayList<>();
+                    requestAPI(position, "Popular", tripList);
+                }else if(position == 2){
+                    ArrayList<Trip> tripList = new ArrayList<>();
+                    requestAPI(position, "Europe", tripList);
+                }else if(position == 3){
+                    ArrayList<Trip> tripList = new ArrayList<>();
+                    requestAPI(position, "For Students", tripList);
                 }
+
             }
         });
         if (select) {
@@ -117,10 +114,9 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
                 holder.filterImage.setAlpha(0.5f);
             }
         }
-
     }
 
-    private void requestAPI(String category, ArrayList<Trip> trips) {
+    private void requestAPI(int position, String category, ArrayList<Trip> trips) {
         ApiInterface apiInterface = APIClient.getApiService();
         Call<AllTripResponse> callIdTrips = apiInterface.getAllTrips();
         callIdTrips.enqueue(new Callback<AllTripResponse>() {
@@ -134,11 +130,11 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
                                 .enqueue(new Callback<Trip>() {
                                     @Override
                                     public void onResponse(Call<Trip> call, Response<Trip> response) {
-                                        synchronized (trips) {
-                                            if (response.body().getCategory().equals(category)) {
+
+                                            if (response.body().getCategory().equalsIgnoreCase(category)) {
                                                 trips.add(response.body());
-                                                updateTripCategory.callBack(trips, category);
-                                            }
+                                                updateTripCategory.callBack(position, trips, category);
+
                                         }
                                     }
 
@@ -160,6 +156,8 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
         });
 
     }
+
+
 
     @Override
     public int getItemCount() {

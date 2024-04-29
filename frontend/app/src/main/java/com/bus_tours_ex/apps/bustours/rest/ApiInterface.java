@@ -31,9 +31,6 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("organizator/{id}/avatar")
-    Call<ResponseBody> getOrganizatorAvatar(@Path("id") int id);
-
     @Multipart
     @POST("register")
     Call<ResponseBody> registerUser(@Part("info") RequestBody userInfo, @Part MultipartBody.Part avatar);
@@ -44,9 +41,6 @@ public interface ApiInterface {
 
     @GET("user/{id}")
     Call<ResponseWrapper> getUser(@Path("id") int id);
-
-    @GET("user/{id}/avatar")
-    Call<ResponseBody> getUserAvatar(@Path("id") int id);
 
     @Multipart
     @PATCH("user/{id}/avatar")
@@ -61,7 +55,5 @@ public interface ApiInterface {
     @GET("trip/all")
     Call<AllTripResponse> getAllTrips();
 
-    @GET("trip/{id}/image")
-    Call<ResponseBody> getTripImage(@Path("id") int id);
 
 }

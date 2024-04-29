@@ -175,7 +175,7 @@ pub async fn get(
             is_admin: user.is_admin,
             password: None, // do not send it back
             //TODO: remove hard coded value
-            avatar: Some(format!("http://127.0.0.1:3000/user/{}/avatar", user.id)),
+            avatar: Some(format!("http://10.0.2.2:3000/user/{}/avatar", user.id)),
         };
         (StatusCode::OK, Json(GetResponse::User(user)))
     } else {
