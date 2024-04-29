@@ -2,11 +2,13 @@ package com.bus_tours_ex.apps.bustours.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +17,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.models.FilterItem;
 import com.bus_tours_ex.apps.bustours.models.Organizator;
+import com.bus_tours_ex.apps.bustours.models.Review;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.ui.trips.TripDetailsActivity;
@@ -27,10 +30,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     private ArrayList<Trip> tripList;
     private Context context;
     private String imageIntent, pickUp, plan, nameManager, telegram, viber, whatsapp, imageManagerIntent;
+    private int tripID;
 
-    public MainAdapter(ArrayList<Trip> tripList, Context context) {
+    public MainAdapter(int tripID, ArrayList<Trip> tripList, Context context) {
         this.tripList = tripList;
         this.context = context;
+        this.tripID = tripID;
     }
 
     @NonNull
@@ -53,6 +58,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         for(String pickUpPlace : item.getPickUp()){
             pickUp = pickUpPlace;
         }
+
         plan = item.getPlan();
         Organizator organizator = item.getOrganizator();
         nameManager = organizator.getName();
@@ -89,6 +95,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Toast.makeText(context, "ID: " + tripID, Toast.LENGTH_SHORT).show();
                     context.startActivity(new Intent(context, TripDetailsActivity.class)
                             .putExtra("titleTrip", tripTitle.getText().toString())
                             .putExtra("priceTrip", tripPrice.getText().toString())
@@ -99,7 +106,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                             .putExtra("telegram", telegram)
                             .putExtra("viber", viber)
                             .putExtra("whatsapp", whatsapp)
-                            .putExtra("managerImage", imageManagerIntent));
+                            .putExtra("managerImage", imageManagerIntent)
+                            .putExtra("trip_id", String.valueOf(tripID)));
                 }
             });
 

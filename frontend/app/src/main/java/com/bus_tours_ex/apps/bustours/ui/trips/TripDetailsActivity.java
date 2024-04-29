@@ -7,33 +7,21 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bus_tours_ex.apps.bustours.R;
-import com.bus_tours_ex.apps.bustours.adapters.MainAdapter;
-import com.bus_tours_ex.apps.bustours.models.Organizator;
-import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
-import com.bus_tours_ex.apps.bustours.rest.AllTripResponse;
-import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class TripDetailsActivity extends AppCompatActivity {
 
     private ImageView backgroundImage, backImage;
     private TextView titleText, planText, priceText, telegram, viber, whatsapp, managerName, pickUp;
-    private MaterialButton reserveButton;
+    private MaterialButton reserveButton, reviewButton;
     private ImageView managerImage;
     private RatingBar ratingBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +29,8 @@ public class TripDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip_details);
 
         init();
+
+        String tripID = getIntent().getStringExtra("trip_id");
 
         priceText.setText(getIntent().getStringExtra("priceTrip"));
         titleText.setText(getIntent().getStringExtra("titleTrip"));
@@ -58,7 +48,19 @@ public class TripDetailsActivity extends AppCompatActivity {
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), BookingTripActivity.class));
+
+                System.out.println(tripID);
+                startActivity(new Intent(getApplicationContext(), BookingTripActivity.class)
+                        .putExtra("tripID", tripID)
+                        .putExtra("price", priceText.getText().toString()));
+            }
+        });
+
+        reviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), AddReviewActivity.class)
+                        .putExtra("tripID", tripID));
             }
         });
 
@@ -87,6 +89,7 @@ public class TripDetailsActivity extends AppCompatActivity {
         reserveButton = findViewById(R.id.reserve_button);
         planText = findViewById(R.id.plan_trip_text);
         backImage = findViewById(R.id.back_image_view);
+        reviewButton = findViewById(R.id.review_button);
 
         managerName = findViewById(R.id.manager_name);
         telegram = findViewById(R.id.text_telegram_manager);

@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Trip {
 
-    //image, title, price, category, pick_up_points
-    //avatar_img, name, last_name, regular_number, email, whatsapp_number, tg_tag, viber_number, trip_id
 
     @SerializedName("trip_id")
     @Expose
@@ -35,9 +33,9 @@ public class Trip {
     private Organizator organizator;
     @SerializedName("reviews")
     @Expose
-    private Reviews[] reviews;
+    private Review[] reviews;
 
-    public Trip(String title, int price, String plan, String[] pickUp, String category, Organizator organizator, Reviews[] reviews) {
+    public Trip(String title, int price, String plan, String[] pickUp, String category, Organizator organizator, Review[] reviews) {
         this.title = title;
         this.price = price;
         this.plan = plan;
@@ -60,6 +58,10 @@ public class Trip {
         this.price = price;
     }
 
+    public void setTripId(int tripId) {
+        this.tripId = tripId;
+    }
+
     public int getTripId() {
         return tripId;
     }
@@ -76,7 +78,7 @@ public class Trip {
         return category;
     }
 
-    public Reviews[] getReviews() {
+    public Review[] getReviews() {
         return reviews;
     }
 

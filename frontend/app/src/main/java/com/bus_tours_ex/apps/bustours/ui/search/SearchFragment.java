@@ -86,7 +86,7 @@ public class SearchFragment extends Fragment {
                                     public void onResponse(Call<Trip> call, Response<Trip> response) {
                                         synchronized (trips){
                                             trips.add(response.body());
-                                            adapter = new MainAdapter(trips, getContext());
+                                            adapter = new MainAdapter(id, trips, getContext());
                                             tripsRecyclerView.setAdapter(adapter);
                                         }
                                     }

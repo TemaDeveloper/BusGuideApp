@@ -403,6 +403,18 @@
                 android:text="@string/Buy"
                 android:layout_weight="1"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/review_button"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:textColor="@color/blue"
+                app:strokeWidth="0dp"
+                android:textAllCaps="false"
+                android:layout_marginTop="10dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="@color/white"
+                android:text="Leave a Review"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

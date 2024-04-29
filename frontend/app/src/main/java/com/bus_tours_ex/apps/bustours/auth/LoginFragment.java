@@ -38,7 +38,7 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
 
-    private MaterialButton loginAsGuestButton, loginButton;
+    private MaterialButton loginButton;
     private TextInputEditText emailEditText, passwordEditText;
 
     @Override
@@ -47,7 +47,6 @@ public class LoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        loginAsGuestButton = view.findViewById(R.id.loginAsGuestButton);
         emailEditText = view.findViewById(R.id.emailEditText);
         passwordEditText = view.findViewById(R.id.passwordEditText);
         loginButton = view.findViewById(R.id.loginButton);
@@ -56,13 +55,6 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 checkLoginForAllUsers();
-            }
-        });
-
-        loginAsGuestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), MainActivity.class));
             }
         });
 
