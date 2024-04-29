@@ -191,7 +191,7 @@ pub async fn reserve(
     Json(req): Json<Reservation>,
 ) -> impl IntoResponse {
     let res = sqlx::query!(
-        "INSERT INTO reservations (user_id, trip_id, price, num_people, date) VALUES ($1, $2, $3, $4, $5)",
+        "INSERT INTO reservations (user_id, trip_id, price, num_people, date) VALUES ($1, $2, $3, $4, $5) RETURNING id",
         req.user_id,
         req.trip_id,
         req.price,
