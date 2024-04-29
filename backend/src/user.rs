@@ -203,7 +203,10 @@ pub async fn reserve(
 
     match res {
         Ok(_) => (StatusCode::OK, "".into()),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{}", e)),
+        Err(e) => {
+            tracing::warn!("Got error while creating reservation, Error: {}", e);
+            (StatusCode::INTERNAL_SERVER_ERROR, "".to_string())
+        },
     }
 }
 
