@@ -202,8 +202,8 @@ pub async fn reserve(
     .await;
 
     match res {
-        Ok(_) => (StatusCode::OK, ""),
-        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, ""),
+        Ok(_) => (StatusCode::OK, "".into()),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("{}", e)),
     }
 }
 
