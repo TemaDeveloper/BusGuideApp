@@ -62,24 +62,10 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:backgroundTint="@color/blue"
         android:elevation="8dp"
         android:text="Done"
-        android:textAllCaps="false"
-        app:cornerRadius="4dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginAsGuestButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginHorizontal="10dp"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/blue"
-        android:elevation="8dp"
-        android:layout_marginBottom="10dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/blue"
-        android:text="Login As Guest"
         android:textAllCaps="false"
         app:cornerRadius="4dp" />
 

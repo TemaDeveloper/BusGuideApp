@@ -97,11 +97,10 @@ public class TripsFragment extends Fragment implements UpdateTripCategory {
     }
 
     @Override
-    public void callBack(int position, ArrayList<Trip> tripList, String category) {
-        mainAdapter = new MainAdapter(tripList, getContext());
+    public void callBack(int id, int position, ArrayList<Trip> tripList, String category) {
+        mainAdapter = new MainAdapter(id, tripList, getContext());
         mainAdapter.notifyDataSetChanged();
         mainRecyclerView.setAdapter(mainAdapter);
         categoryName.setText(category);
-        System.out.println(category + " ====== > Cat");
     }
 }

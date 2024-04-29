@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -132,9 +133,10 @@ public class FiltersAdapter extends RecyclerView.Adapter<FiltersAdapter.FilterVi
                                     public void onResponse(Call<Trip> call, Response<Trip> response) {
 
                                             if (response.body().getCategory().equalsIgnoreCase(category)) {
-                                                trips.add(response.body());
-                                                updateTripCategory.callBack(position, trips, category);
-
+                                                synchronized (trips){
+                                                    trips.add(response.body());
+                                                    updateTripCategory.callBack(id, position, trips, category);
+                                                }
                                         }
                                     }
 

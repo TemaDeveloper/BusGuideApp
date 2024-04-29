@@ -3,6 +3,8 @@ package com.bus_tours_ex.apps.bustours.rest;
 import androidx.annotation.Nullable;
 
 import com.bus_tours_ex.apps.bustours.models.AuthInfo;
+import com.bus_tours_ex.apps.bustours.models.Reservation;
+import com.bus_tours_ex.apps.bustours.models.ReservationList;
 import com.bus_tours_ex.apps.bustours.models.ResponseWrapper;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.models.User;
@@ -54,6 +56,13 @@ public interface ApiInterface {
 
     @GET("trip/all")
     Call<AllTripResponse> getAllTrips();
+
+    @POST("/reserve")
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> book(@Body RequestBody reservationInfo);
+
+    @GET("/user/{id}/reservations")
+    Call<ReservationList> getReservations(@Path("id") int id);
 
 
 }

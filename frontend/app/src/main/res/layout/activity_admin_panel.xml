@@ -37,17 +37,6 @@
                 android:textSize="14sp"
                 android:layout_margin="10dp"/>
 
-            <TextView
-                android:id="@+id/create_admin_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/new_admin_creation"
-                android:textColor="@color/black"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/rect_back"
-                android:padding="5dp"
-                android:textSize="14sp"
-                android:layout_margin="10dp"/>
 
             <TextView
                 android:id="@+id/upload_image_text_view"

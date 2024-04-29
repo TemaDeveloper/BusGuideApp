@@ -24,11 +24,14 @@ import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
 import com.bus_tours_ex.apps.bustours.databinding.FragmentProfileBinding;
 import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
 import com.bus_tours_ex.apps.bustours.models.Organizator;
+import com.bus_tours_ex.apps.bustours.models.Reservation;
+import com.bus_tours_ex.apps.bustours.models.ReservationList;
 import com.bus_tours_ex.apps.bustours.models.ResponseWrapper;
 import com.bus_tours_ex.apps.bustours.models.Reviews;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.models.User;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
+import com.bus_tours_ex.apps.bustours.rest.AllTripResponse;
 import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -69,6 +72,7 @@ public class ProfileFragment extends Fragment {
     private final int REQUEST_CODE_AVATAR_PHOTO = 200;
     private String TAG = "IMAGE_CHOOSER_E";
     private byte[] avatarBytes;
+    private int ID;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -76,6 +80,7 @@ public class ProfileFragment extends Fragment {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        ID = SharedPrefManager.getInstance(getContext()).getSavedId();
         loginButton = root.findViewById(R.id.loginButton);
         myReservationsRecyclerView = root.findViewById(R.id.my_reservations_recycler_view);
         linReservations = root.findViewById(R.id.lin_reservations);
@@ -86,6 +91,11 @@ public class ProfileFragment extends Fragment {
         logOutButton = root.findViewById(R.id.log_out_button);
         updateAvatarImage = root.findViewById(R.id.update_avatar_image);
 
+        trips = new ArrayList<>();
+        myReservationsRecyclerView.setHasFixedSize(true);
+        myReservationsRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        fetchReservations();
         updateAvatarImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +141,7 @@ public class ProfileFragment extends Fragment {
 
     private void updateImage(){
         // Convert trip and organizer data to JSON
-        int ID = SharedPrefManager.getInstance(getContext()).getSavedId();
+
         Call<ResponseBody> call = APIClient.getApiService().updateUserAvatar(ID, toMultipartBodyPart("avatar", avatarBytes, "avatar"));
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -166,6 +176,46 @@ public class ProfileFragment extends Fragment {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    private void fetchReservations(){
+        ApiInterface apiInterface = APIClient.getApiService();
+        Call<ReservationList> callReservations = apiInterface.getReservations(ID);
+        callReservations.enqueue(new Callback<ReservationList>() {
+            @Override
+            public void onResponse(Call<ReservationList> call, Response<ReservationList> response) {
+
+                if (response.isSuccessful()) {
+
+                    for(int i = 0; i < response.body().getReservations().size(); i++){
+                        int tripID = response.body().getReservations().get(i).getTripId();
+                        System.out.println("trip_ID " + tripID);
+                        apiInterface.getTrip(tripID).enqueue(new Callback<Trip>() {
+                            @Override
+                            public void onResponse(Call<Trip> call, Response<Trip> response) {
+                                synchronized (trips) {
+                                    trips.add(response.body());
+                                    adapterMyReservations = new MainAdapter(tripID, trips, getContext());
+                                    myReservationsRecyclerView.setAdapter(adapterMyReservations);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Trip> call, Throwable throwable) {
+
+                            }
+                        });
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReservationList> call, Throwable t) {
+                Log.d("FAIL_GETTING_U", t.getMessage());
+            }
+        });
     }
 
     private void getUserData(){

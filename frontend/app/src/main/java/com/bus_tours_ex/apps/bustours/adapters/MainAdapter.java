@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +28,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     private ArrayList<Trip> tripList;
     private Context context;
     private String imageIntent, pickUp, plan, nameManager, telegram, viber, whatsapp, imageManagerIntent;
+    private int tripID;
+
+    public MainAdapter(int tripID, ArrayList<Trip> tripList, Context context) {
+        this.tripList = tripList;
+        this.context = context;
+        this.tripID = tripID;
+    }
 
     public MainAdapter(ArrayList<Trip> tripList, Context context) {
         this.tripList = tripList;
@@ -89,6 +97,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Toast.makeText(context, "ID: " + tripID, Toast.LENGTH_SHORT).show();
                     context.startActivity(new Intent(context, TripDetailsActivity.class)
                             .putExtra("titleTrip", tripTitle.getText().toString())
                             .putExtra("priceTrip", tripPrice.getText().toString())
@@ -99,7 +108,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
                             .putExtra("telegram", telegram)
                             .putExtra("viber", viber)
                             .putExtra("whatsapp", whatsapp)
-                            .putExtra("managerImage", imageManagerIntent));
+                            .putExtra("managerImage", imageManagerIntent)
+                            .putExtra("trip_id", String.valueOf(tripID)));
                 }
             });
 

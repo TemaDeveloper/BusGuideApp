@@ -58,7 +58,11 @@ public class TripDetailsActivity extends AppCompatActivity {
         reserveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), BookingTripActivity.class));
+                String tripID = getIntent().getStringExtra("trip_id");
+                System.out.println(tripID);
+                startActivity(new Intent(getApplicationContext(), BookingTripActivity.class)
+                        .putExtra("tripID", tripID)
+                        .putExtra("price", priceText.getText().toString()));
             }
         });
 

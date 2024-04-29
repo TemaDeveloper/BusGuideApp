@@ -49,7 +49,7 @@ import retrofit2.Response;
 
 public class AdminPanelActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private TextView createAdmin, tourPhoto, logoutText;
+    private TextView tourPhoto, logoutText;
     private final int REQUEST_CODE_TOUR_PHOTO = 200;
     private String TAG = "IMAGE_CHOOSER_E";
     private ImageView tourImage;
@@ -58,10 +58,8 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
     private Spinner categoriesSpinner;
     private String[] categories;
     private String chosenCategory;
-    private InputStream iStream;
     private final int REQUEST_CODE_MANAGER_PHOTO = 201;
     private CircleImageView photoManager;
-
     private byte[] tourImageBytes;
     private byte[] managerImageBytes;
 
@@ -74,7 +72,6 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         createSpinner();
 
         tourPhoto.setOnClickListener(this::onClick);
-        createAdmin.setOnClickListener(this::onClick);
         allReservationsButton.setOnClickListener(this::onClick);
         logoutText.setOnClickListener(this::onClick);
         photoManager.setOnClickListener(this::onClick);
@@ -169,7 +166,6 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         managerViber = findViewById(R.id.viber_manager);
         managerWatsApp = findViewById(R.id.watsapp_manager);
 
-        createAdmin = findViewById(R.id.create_admin_text);
         tourPhoto = findViewById(R.id.upload_image_text_view);
         tourImage = findViewById(R.id.tour_image);
 
@@ -215,9 +211,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.create_admin_text) {
-            startActivity(new Intent(getApplicationContext(), AdminCreationActivity.class));
-        } else if (id == R.id.photo_manager) {
+        if (id == R.id.photo_manager) {
             goToGallery(REQUEST_CODE_MANAGER_PHOTO);
         } else if (id == R.id.upload_image_text_view) {
             goToGallery(REQUEST_CODE_TOUR_PHOTO);
@@ -230,10 +224,16 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         } else if (id == R.id.create_trip_button) {
             try {
                 create();
+                onResume();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
