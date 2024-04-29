@@ -23,6 +23,10 @@ CREATE TABLE trips (
 CREATE TABLE reservations (
     id SERIAL PRIMARY KEY,
 
+    price INT NOT NULL,
+    num_people INT NOT NULL,
+    date TEXT NOT NULL,
+
     user_id INT NOT NULL, 
     FOREIGN KEY (user_id) REFERENCES users(id),
 

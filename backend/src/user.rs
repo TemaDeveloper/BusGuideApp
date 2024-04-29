@@ -186,20 +186,17 @@ pub async fn get(
     }
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct ReserveReqBody {
-    pub user_id: i32,
-    pub trip_id: i32,
-}
-
 pub async fn reserve(
     Extension(db_conn): Extension<sqlx::PgPool>,
-    Json(req): Json<ReserveReqBody>,
+    Json(req): Json<Reservation>,
 ) -> impl IntoResponse {
     let res = sqlx::query!(
-        "INSERT INTO reservations (user_id, trip_id) VALUES ($1, $2)",
+        "INSERT INTO reservations (user_id, trip_id, price, num_people, date) VALUES ($1, $2, $3, $4, $5)",
         req.user_id,
-        req.trip_id
+        req.trip_id,
+        req.price,
+        req.num_people,
+        req.date
     )
     .fetch_one(&db_conn)
     .await;
@@ -211,8 +208,18 @@ pub async fn reserve(
 }
 
 #[derive(Deserialize, Serialize, Default)]
+pub struct Reservation {
+    trip_id: i32,
+    user_id: i32,
+
+    price: i32, 
+    num_people: i32,
+    date: String
+}
+
+#[derive(Deserialize, Serialize, Default)]
 pub struct ReservationsResponse {
-    trip_ids: Vec<i32>,
+    reservations: Vec<Reservation>
 }
 
 pub async fn get_reservations(
@@ -220,7 +227,7 @@ pub async fn get_reservations(
     Extension(db_conn): Extension<sqlx::PgPool>,
 ) -> (StatusCode, Json<ReservationsResponse>) {
     let q = sqlx::query!(
-        "SELECT (trip_id) FROM reservations WHERE user_id = $1",
+        "SELECT * FROM reservations WHERE user_id = $1",
         user_id
     )
     .fetch_all(&db_conn)
@@ -230,7 +237,14 @@ pub async fn get_reservations(
         Ok(res) => (
             StatusCode::OK,
             Json(ReservationsResponse {
-                trip_ids: res.iter().map(|r| r.trip_id).collect(),
+                reservations: res.iter().map(|r| Reservation {
+                    num_people: r.num_people,
+                    price: r.price,
+                    date: r.date.clone(),
+                    user_id: r.user_id,
+                    trip_id: r.trip_id,
+                })
+                .collect(),
             }),
         ),
         Err(_) => (StatusCode::NOT_FOUND, Json::default()),

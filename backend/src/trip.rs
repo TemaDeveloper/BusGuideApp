@@ -10,10 +10,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
 use crate::{constants, review, utils};
-/*
-Json: {"category":"New","organizator":{"email":"lakj","last_name":"","name":"lakjd","regular_number":"","tg_tag":"","viber_number":"","whatsapp_number":""},"pick_up_points":["alkdj"],"plan":"asdkjfglk","price":1123,"title":"sdfg"}
-thread 'tokio-runtime-worker' panicked at src/trip.rs:22:80:
- */
 pub async fn create(
     Extension(db_conn): Extension<sqlx::PgPool>,
     mut req: Multipart,
