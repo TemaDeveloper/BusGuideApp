@@ -3,7 +3,7 @@ use axum::{
     extract,
     http::{header, Response, StatusCode},
     response::IntoResponse,
-    routing::{get, patch, post},
+    routing::{delete, get, patch, post},
     Extension, Router,
 };
 use dotenv::dotenv;
@@ -39,6 +39,7 @@ async fn main() {
         .route("/user/:id/reservations", get(user::get_reservations))
         .route("/reserve", post(user::reserve))
 
+        .route("/trip/:id", delete(trip::delete))
         .route("/trip", post(trip::create))
         .route("/trip/:id", get(trip::get))
         .route("/trip/all", get(trip::get_all))

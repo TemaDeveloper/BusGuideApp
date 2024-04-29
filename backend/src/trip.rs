@@ -1,7 +1,10 @@
 use std::convert::Infallible;
 
 use axum::{
-    body::Body, extract::{self, Multipart}, response::{IntoResponse, Response}, Extension, Json
+    body::Body,
+    extract::{self, Multipart},
+    response::{IntoResponse, Response},
+    Extension, Json,
 };
 use backend::schemas;
 use bytes::Bytes;
@@ -20,9 +23,7 @@ pub async fn create(
     let trip_picture = req.get("trip_picture").unwrap_or(&null_bytes);
     let organizator_avatar = req.get("organizator_avatar").unwrap_or(&null_bytes);
 
-    let pick_up_points = Some(
-        body.pick_up_points
-    );
+    let pick_up_points = Some(body.pick_up_points);
 
     let trip_record = sqlx::query!(
         r#"
@@ -61,7 +62,10 @@ pub async fn create(
         .await;
     }
 
-    (StatusCode::OK, format!("\"user_id\": \"{}\"", trip_record.id))
+    (
+        StatusCode::OK,
+        format!("\"user_id\": \"{}\"", trip_record.id),
+    )
 }
 
 async fn create_organizator(
@@ -181,13 +185,10 @@ pub async fn get_image(
 
 #[derive(Deserialize, Serialize, Default)]
 struct GetAllResponse {
-    trips_ids: Vec<i32>
+    trips_ids: Vec<i32>,
 }
 
-pub async fn get_all(
-    Extension(db_conn): Extension<sqlx::PgPool>
-) -> impl IntoResponse {
-    
+pub async fn get_all(Extension(db_conn): Extension<sqlx::PgPool>) -> impl IntoResponse {
     let q = sqlx::query!("SELECT id FROM trips;")
         .fetch_all(&db_conn)
         .await;
@@ -196,15 +197,53 @@ pub async fn get_all(
         (
             StatusCode::OK,
             Json(GetAllResponse {
-                trips_ids: q.iter()
-                    .map(|q| q.id)
-                    .collect()
-            })
+                trips_ids: q.iter().map(|q| q.id).collect(),
+            }),
         )
     } else {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            Json(GetAllResponse::default())
+            Json(GetAllResponse::default()),
         )
     }
+}
+
+pub async fn delete(extract::Path(trip_id): extract::Path<i32>, Extension(db_conn): Extension<sqlx::PgPool>) -> impl IntoResponse {
+    if let Err(e) = sqlx::query!(
+        "DELETE FROM trips WHERE id = $1", trip_id)
+        .execute(&db_conn)
+        .await
+    {
+        tracing::warn!("Error deleting Trip{trip_id}, Error: {}", e);
+        return StatusCode::NOT_FOUND;
+    }
+
+    if let Err(e) = sqlx::query!(
+        "DELETE FROM reservations WHERE trip_id = $1", trip_id)
+        .execute(&db_conn)
+        .await
+    {
+        tracing::warn!("Error deleting Trip{trip_id}, Reservation Issue(This should never happen), Error: {}", e);
+        return StatusCode::NOT_FOUND;
+    }
+
+    if let Err(e) = sqlx::query!(
+        "DELETE FROM organizators WHERE trip_id = $1", trip_id)
+        .execute(&db_conn)
+        .await
+    {
+        tracing::warn!("Error deleting Trip{trip_id}, Organizator Issue(This should never happen), Error: {}", e);
+        return StatusCode::NOT_FOUND;
+    }
+
+    if let Err(e) = sqlx::query!(
+        "DELETE FROM reviews WHERE trip_id = $1", trip_id)
+        .execute(&db_conn)
+        .await
+    {
+        tracing::warn!("Error deleting Trip{trip_id}, Review Issue(This should never happen), Error: {}", e);
+        return StatusCode::NOT_FOUND;
+    }
+
+    StatusCode::OK
 }
