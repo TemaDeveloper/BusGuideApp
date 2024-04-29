@@ -240,12 +240,15 @@ pub async fn get_reservations(
         Ok(res) => (
             StatusCode::OK,
             Json(ReservationsResponse {
-                reservations: res.iter().map(|r| Reservation {
-                    num_people: r.num_people,
-                    price: r.price,
-                    date: r.date.clone(),
-                    user_id: r.user_id,
-                    trip_id: r.trip_id,
+                reservations: res.iter().map(|r| {
+                    tracing::info!("Sending reservation of Trip({}) of User({user_id})", r.id);
+                    Reservation {
+                        num_people: r.num_people,
+                        price: r.price,
+                        date: r.date.clone(),
+                        user_id: r.user_id,
+                        trip_id: r.trip_id,
+                    }
                 })
                 .collect(),
             }),
