@@ -78,36 +78,6 @@ public class TripDetailsActivity extends AppCompatActivity {
         viber.setText(getIntent().getStringExtra("viber"));
         whatsapp.setText(getIntent().getStringExtra("whatsapp"));
 
-
-
-//        ApiInterface apiInterface = APIClient.getApiService();
-//        int id = Integer.parseInt(getIntent().getStringExtra("trip_id"));
-//        System.out.println(id + " <====> ID");
-//
-//        apiInterface.getTrip(id).enqueue(new Callback<Trip>() {
-//            @Override
-//            public void onResponse(Call<Trip> call, Response<Trip> response) {
-//
-//                    Organizator organizator = response.body().getOrganizator();
-//                    Picasso.get().load(APIClient.DATABASE_URL + organizator.getAvatarImg()).into(managerImage);
-//                    managerName.setText(organizator.getName());
-//                    telegram.setText(organizator.getTgTag());
-//                    viber.setText(organizator.getViberNumber());
-//                    whatsapp.setText(organizator.getWhatsappNumber());
-//
-//                    planText.setText(response.body().getPlan());
-//                    for(String pickUpPlace : response.body().getPickUp()){
-//                        pickUp.setText(pickUpPlace + "\n");
-//                    }
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Trip> call, Throwable throwable) {
-//
-//            }
-//        });
     }
 
     private void init(){
