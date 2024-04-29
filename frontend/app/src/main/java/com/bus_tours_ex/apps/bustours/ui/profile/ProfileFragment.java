@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,31 +16,20 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bus_tours_ex.apps.bustours.MainActivity;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.adapters.MainAdapter;
 import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
 import com.bus_tours_ex.apps.bustours.databinding.FragmentProfileBinding;
 import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
-import com.bus_tours_ex.apps.bustours.models.Organizator;
-import com.bus_tours_ex.apps.bustours.models.Reservation;
 import com.bus_tours_ex.apps.bustours.models.ReservationList;
 import com.bus_tours_ex.apps.bustours.models.ResponseWrapper;
-import com.bus_tours_ex.apps.bustours.models.Reviews;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.models.User;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
-import com.bus_tours_ex.apps.bustours.rest.AllTripResponse;
 import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.gson.Gson;
-import com.google.protobuf.StringValue;
-import com.google.protobuf.Value;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

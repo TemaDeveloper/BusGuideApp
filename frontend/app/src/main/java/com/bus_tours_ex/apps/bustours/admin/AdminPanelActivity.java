@@ -13,30 +13,21 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
 import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
 import com.bus_tours_ex.apps.bustours.models.Organizator;
-import com.bus_tours_ex.apps.bustours.models.Reviews;
+import com.bus_tours_ex.apps.bustours.models.Review;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
-import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -45,7 +36,6 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class AdminPanelActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -105,7 +95,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
 
         // Convert trip and organizer data to JSON
         Gson gson = new Gson();
-        String json = gson.toJson(new Trip(title, price, plan, new String[] {pickUp}, chosenCategory, new Organizator(nameM, "", "", emailM, watsAppM, telegramM, viberM), new Reviews[]{}));
+        String json = gson.toJson(new Trip(title, price, plan, new String[] {pickUp}, chosenCategory, new Organizator(nameM, "", "", emailM, watsAppM, telegramM, viberM), new Review[]{}));
         RequestBody info = RequestBody.create(MediaType.parse("application/json"), json);
 
         // Send the multipart request with Retrofi't

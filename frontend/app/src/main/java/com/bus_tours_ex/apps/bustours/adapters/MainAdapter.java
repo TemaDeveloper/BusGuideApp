@@ -2,6 +2,7 @@ package com.bus_tours_ex.apps.bustours.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bus_tours_ex.apps.bustours.R;
 import com.bus_tours_ex.apps.bustours.models.FilterItem;
 import com.bus_tours_ex.apps.bustours.models.Organizator;
+import com.bus_tours_ex.apps.bustours.models.Review;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
 import com.bus_tours_ex.apps.bustours.ui.trips.TripDetailsActivity;
@@ -34,11 +36,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         this.tripList = tripList;
         this.context = context;
         this.tripID = tripID;
-    }
-
-    public MainAdapter(ArrayList<Trip> tripList, Context context) {
-        this.tripList = tripList;
-        this.context = context;
     }
 
     @NonNull
@@ -61,6 +58,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         for(String pickUpPlace : item.getPickUp()){
             pickUp = pickUpPlace;
         }
+
         plan = item.getPlan();
         Organizator organizator = item.getOrganizator();
         nameManager = organizator.getName();

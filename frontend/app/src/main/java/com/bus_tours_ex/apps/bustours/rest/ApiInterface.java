@@ -64,5 +64,8 @@ public interface ApiInterface {
     @GET("/user/{id}/reservations")
     Call<ReservationList> getReservations(@Path("id") int id);
 
+    @POST("/trip/{id}/review")
+    @Headers("Content-Type: application/json")
+    Call<ResponseBody> makeReview(@Path("id") int id, @Body RequestBody authInfo);
 
 }
