@@ -191,14 +191,14 @@ pub async fn reserve(
     Json(req): Json<Reservation>,
 ) -> impl IntoResponse {
     let res = sqlx::query!(
-        "INSERT INTO reservations (user_id, trip_id, price, num_people, date) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+        "INSERT INTO reservations (user_id, trip_id, price, num_people, date) VALUES ($1, $2, $3, $4, $5)",
         req.user_id,
         req.trip_id,
         req.price,
         req.num_people,
         req.date
     )
-    .fetch_one(&db_conn)
+    .execute(&db_conn)
     .await;
 
     match res {
