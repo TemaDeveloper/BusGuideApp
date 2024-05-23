@@ -3,8 +3,7 @@ use std::collections::HashMap;
 use axum::extract::Multipart;
 use bytes::Bytes;
 
-/// If you don't understand where I got those magic numbers from
-/// I don't understand either, I asked ChatGpt and prayed they were right
+
 pub fn bytes_to_img_format(bytes: &[u8]) -> Option<&'static str> {
     match bytes {
         [0x89, b'P', b'N', b'G', 0x0D, 0x0A, 0x1A, 0x0A, ..] => Some("image/png"),
