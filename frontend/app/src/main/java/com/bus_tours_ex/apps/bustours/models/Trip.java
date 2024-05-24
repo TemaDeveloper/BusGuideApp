@@ -58,6 +58,7 @@ public class Trip {
         this.price = price;
     }
 
+
     public void setTripId(int tripId) {
         this.tripId = tripId;
     }

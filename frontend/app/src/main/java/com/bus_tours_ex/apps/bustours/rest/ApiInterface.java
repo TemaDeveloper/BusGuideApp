@@ -18,6 +18,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -67,5 +68,8 @@ public interface ApiInterface {
     @POST("/trip/{id}/review")
     @Headers("Content-Type: application/json")
     Call<ResponseBody> makeReview(@Path("id") int id, @Body RequestBody authInfo);
+
+    @DELETE("/trip/{id}")
+    Call<ResponseBody> delete(@Path("id") int id);
 
 }

@@ -29,9 +29,6 @@
             android:name=".ui.trips.BookingTripActivity"
             android:exported="false" />
         <activity
-            android:name=".admin.AdminCreationActivity"
-            android:exported="false" />
-        <activity
             android:name=".admin.AdminPanelActivity"
             android:exported="false" />
         <activity

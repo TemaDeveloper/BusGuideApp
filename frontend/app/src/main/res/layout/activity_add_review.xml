@@ -54,7 +54,7 @@
         android:layout_marginTop="20dp"
         app:cornerRadius="10dp"
         android:backgroundTint="@color/blue"
-        android:text="@string/Buy"/>
+        android:text="Add"/>
 
 
 </LinearLayout>

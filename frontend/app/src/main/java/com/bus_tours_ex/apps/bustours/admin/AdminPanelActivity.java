@@ -14,20 +14,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bus_tours_ex.apps.bustours.R;
+import com.bus_tours_ex.apps.bustours.adapters.MainAdapter;
 import com.bus_tours_ex.apps.bustours.auth.AuthActivity;
 import com.bus_tours_ex.apps.bustours.managers.SharedPrefManager;
 import com.bus_tours_ex.apps.bustours.models.Organizator;
 import com.bus_tours_ex.apps.bustours.models.Review;
 import com.bus_tours_ex.apps.bustours.models.Trip;
 import com.bus_tours_ex.apps.bustours.rest.APIClient;
+import com.bus_tours_ex.apps.bustours.rest.AllTripResponse;
+import com.bus_tours_ex.apps.bustours.rest.ApiInterface;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -36,6 +42,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdminPanelActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -43,7 +50,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
     private final int REQUEST_CODE_TOUR_PHOTO = 200;
     private String TAG = "IMAGE_CHOOSER_E";
     private ImageView tourImage;
-    private MaterialButton allReservationsButton, createTripButton;
+    private MaterialButton createTripButton;
     private EditText tripTitle, tripPlan, tripPrice, tripPickUp, managerName, managerEmail, managerTeleg, managerViber, managerWatsApp;
     private Spinner categoriesSpinner;
     private String[] categories;
@@ -62,7 +69,6 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         createSpinner();
 
         tourPhoto.setOnClickListener(this::onClick);
-        allReservationsButton.setOnClickListener(this::onClick);
         logoutText.setOnClickListener(this::onClick);
         photoManager.setOnClickListener(this::onClick);
         createTripButton.setOnClickListener(this::onClick);
@@ -78,6 +84,7 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         //Setting the ArrayAdapter data on the Spinner
         categoriesSpinner.setAdapter(aa);
     }
+
 
 
     private void create() throws IOException {
@@ -159,7 +166,6 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
         tourPhoto = findViewById(R.id.upload_image_text_view);
         tourImage = findViewById(R.id.tour_image);
 
-        allReservationsButton = findViewById(R.id.all_reservations_button);
         logoutText = findViewById(R.id.log_out_button);
 
     }
@@ -205,8 +211,6 @@ public class AdminPanelActivity extends AppCompatActivity implements View.OnClic
             goToGallery(REQUEST_CODE_MANAGER_PHOTO);
         } else if (id == R.id.upload_image_text_view) {
             goToGallery(REQUEST_CODE_TOUR_PHOTO);
-        } else if (id == R.id.all_reservations_button) {
-            startActivity(new Intent(getApplicationContext(), AllReservationsActivity.class));
         } else if (id == R.id.log_out_button) {
             SharedPrefManager.getInstance(getApplicationContext()).setIsAnon(true);
             SharedPrefManager.getInstance(getApplicationContext()).setIsAdmin(false);
