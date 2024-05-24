@@ -44,7 +44,7 @@ pub async fn register(
             ($1, $2, $3, $4, $5)
         RETURNING id
         "#,
-        &avatar as &[u8], /* just so dumb compiler understands what we want from it */
+        &avatar as &[u8], 
         req.name,
         req.email,
         req.password,
